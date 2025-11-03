@@ -1791,7 +1791,28 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
         //    }
 
         //}
-
+        private void RadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            richTextBox2.Text = GetMessageText();
+        }
+        
+        // Thêm phương thức này vào class của bạn
+        private string GetMessageText()
+        {
+            if (radioButton1.Checked)
+            {
+                return "เงินกู้ของคุณเกินกำหนดชำระแล้ว กรุณาชำระเพื่อหลีกเลี่ยงปัญหา คำเตือนครั้งที่ 2";
+            }
+            else if (radioButton2.Checked)
+            {
+                return "เงินกู้ของคุณเลยกำหนดชำระแล้ว กรุณาชำระเงินเพื่อหลีกเลี่ยงปัญหาที่อาจเกิดขึ้น คำเตือนครั้งที่ 3 หลังจากคำเตือนนี้ หากเรายังไม่ได้รับการชำระเงิน เราจะส่งข้อมูลของคุณให้กับบริษัททวงหนี้";
+            }
+            else
+            {
+                return richTextBox2.Text;
+            }
+        }
+        
         private void HandleLineButtonClick(int rowIndex)
         {
             int num = this.FindDisplayRowIndexByRealIndex(rowIndex);
@@ -1800,7 +1821,11 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
             {
                 object value = this.dataGridView1.Rows[num].Cells[1].Value;
                 string searchText = (value != null) ? value.ToString() : null;
-                string text = this.richTextBox2.Text;
+
+                // Lấy text từ phương thức chung
+                string text = GetMessageText();
+                richTextBox2.Text = text; // Cập nhật hiển thị
+
                 string text2 = (text != null) ? text.ToString() : null;
                 bool flag2 = text2 == "" || text2 == null;
                 if (flag2)
@@ -1808,6 +1833,7 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                     object value2 = this.dataGridView1.Rows[num].Cells[1].Value;
                     text2 = ((value2 != null) ? value2.ToString() : null);
                 }
+
                 bool flag3 = LineWindowManager.OpenLineAndSearch(searchText);
                 if (flag3)
                 {
@@ -1817,6 +1843,7 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                 {
                     MessageBox.Show("Lỗi khi mở LINE!");
                 }
+
                 bool flag4 = !string.IsNullOrEmpty(text2);
                 if (flag4)
                 {
@@ -4796,7 +4823,6 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
         }
         private void DisableFeatures()
         {
-            button1.Enabled = false;
             button2.Enabled = false;
             button3.Enabled = false;
             button4.Enabled = false;
@@ -4804,7 +4830,6 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
             button6.Enabled = false;
             button7.Enabled = false;
             button8.Enabled = false;
-            button9.Enabled = false;
             button10.Enabled = false;
             button11.Enabled = false;
             button12.Enabled = false;
@@ -4813,6 +4838,23 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
             comboBoxUsername.Enabled = false;
             textBoxPassIcloud.Enabled = false;
             dataGridView1.Enabled = false;
+            radioButtonAll.Enabled = false; 
+            radioButtonLine1.Enabled = false;
+            radioButtonLine2.Enabled = false;
+            radioButtonxoa.Enabled = false; 
+            button13.Enabled = false;
+            button14.Enabled = false;
+            button15.Enabled = false;
+            button20.Enabled = false;
+            button21.Enabled = false;
+            button22.Enabled = false;
+            button23.Enabled = false;
+            button24.Enabled = false;
+            button19.Enabled = false;   
+
+
+
+
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -4827,8 +4869,25 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
         private List<string> GetUserTomorowNew(string userId, string shopId)
         {
             List<string> result;
+            string tenSo = "";
             try
             {
+                if(shopId == "SHP19263338")
+                {
+                    tenSo = "Sổ 1";
+                }else if(shopId == "SHP10275991")
+                {
+                    tenSo = "Sổ 2";
+                }else if(shopId == "SHP93791247")
+                {
+                    tenSo = "Sổ 3";
+                }else if(shopId == "SHP01201952")
+                {
+                    tenSo = "Sổ 6";
+                }else if(shopId == "SHP78278175")
+                {
+                    tenSo = "Sổ 7";
+                }
                 List<string> list = new List<string>();
                 string text = this.comboBoxUsername1.Text.Trim();
                 string text2 = this.textBoxPass.Text;
@@ -4882,7 +4941,7 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                             text6,
                             " tiền họ|",
                             i.ToString(),
-                            "|Sổ 1|",
+                            "|",tenSo,"|",
                             text8
                         }));
                     }
