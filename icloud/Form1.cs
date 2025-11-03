@@ -49,6 +49,7 @@ namespace icloud
 {
     public partial class Form1 : Form
     {
+        private Random random = new Random();
         private string filePath;
         private static bool shouldMerge = false;
         bool bRunning = false; // dùng biến này để kiểm tra xem chương trình có chạy k
@@ -6528,80 +6529,102 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
 
         private void button14_Click(object sender, EventArgs e)
         {
-            Thread t = new Thread(() =>
+            Thread t = new Thread(async () =>
             {
                 bRunning = true;
-                // khóa nút bắt đầu lại
                 button14.Invoke((MethodInvoker)delegate ()
                 {
                     button14.Enabled = false;
                 });
 
                 int soluong_toi_da = 79;
-                int soluong_dang_chay = 0; // để lưu số luồng hiện tại đang chạy
+                SemaphoreSlim semaphore = new SemaphoreSlim(soluong_toi_da, soluong_toi_da);
+                List<Task> tasks = new List<Task>();
 
+                // Lấy giá trị start và end từ numericUpDown
+                int startIndex = 0;
+                int endIndex = 0;
+                bool useFullRange = false;
 
-                for (int i = 0; i < dataGridView1.Rows.Count; i++) //duyệt từ đầu đến cuối
+                // Invoke để lấy giá trị từ UI thread
+                numericUpDownStart.Invoke((MethodInvoker)delegate ()
                 {
+                    startIndex = (int)numericUpDownStart.Value;
+                });
 
-                    // trước khi chạy kiểm tra xem luồng mới có thỏa mãn điều kiện chạy k để chạy luồng mới
-                    while (true)
+                numericUpDownEnd.Invoke((MethodInvoker)delegate ()
+                {
+                    endIndex = (int)numericUpDownEnd.Value;
+                });
+
+                // Kiểm tra nếu cả 2 giá trị đều là 0 (không nhập gì)
+                if (startIndex == 0 && endIndex == 0)
+                {
+                    var result = MessageBox.Show("Bạn chưa nhập giá trị Start và End.\n\nChọn YES để chạy tất cả các dòng\nChọn NO để dừng lại",
+                                               "Xác nhận",
+                                               MessageBoxButtons.YesNo,
+                                               MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
                     {
-                        lock (locker)
+                        useFullRange = true;
+                        startIndex = 0;
+                        endIndex = dataGridView1.Rows.Count - 1;
+                    }
+                    else
+                    {
+                        // Người dùng chọn NO, dừng lại
+                        button14.Invoke((MethodInvoker)delegate ()
                         {
-                            if (soluong_dang_chay < soluong_toi_da)
+                            button14.Enabled = true;
+                        });
+                        return;
+                    }
+                }
+                else
+                {
+                    // Kiểm tra giá trị hợp lệ
+                    if (startIndex < 0) startIndex = 0;
+                    if (endIndex >= dataGridView1.Rows.Count) endIndex = dataGridView1.Rows.Count - 1;
+                    if (startIndex > endIndex)
+                    {
+                        // Swap nếu start > end
+                        int temp = startIndex;
+                        startIndex = endIndex;
+                        endIndex = temp;
+                    }
+                }
+
+                // Chạy từ startIndex đến endIndex
+                for (int i = startIndex; i <= endIndex; i++)
+                {
+                    await semaphore.WaitAsync(); // Chờ có slot trống
+                    int currentIndex = i;
+                    Task task = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            if (bRunning)
                             {
-                                break;
-
+                               runToDie(currentIndex); // QUAN TRỌNG: Sử dụng await
                             }
-
                         }
-
-                        Thread.Sleep(500);
-                    }
-                    // điều kiện thỏa mãn---> cho chạy thread mới
-                    int so_dong_dang_chay = i;
-
-                    lock (locker)
-                    {
-                        soluong_dang_chay++;
-                    }
-
-                    Thread t2 = new Thread(() =>
-                    {
-                       
-                        if (bRunning)
+                        catch (Exception ex)
                         {
-                            runToDie(so_dong_dang_chay);
+                            Console.WriteLine($"Error in task {currentIndex}: {ex.Message}");
                         }
-                        else
+                        finally
                         {
-
-                        }
-                        lock (locker)
-                        {
-                            soluong_dang_chay--;
+                            semaphore.Release(); // Giải phóng slot AFTER task thực sự hoàn thành
                         }
                     });
-                    t2.Start();
-                    Thread.Sleep(60000); // thời gian delay giữa các luồng
-
-                }
-                // chờ tất cả các thread hoàn thành
-                while (true)
-                {
-                    lock (locker)
-                    {
-                        if (soluong_dang_chay == 0)
-                        {
-                            break;
-                        }
-                    }
-
-                    Thread.Sleep(1000);
+                    tasks.Add(task);
+                    Thread.Sleep(random.Next(60000, 70000)); // delay giữa các task
                 }
 
-                // mở nút ra sau khi chạy xong
+                await Task.WhenAll(tasks); // Chờ tất cả tasks hoàn thành
+                semaphore.Dispose();
+
                 button14.Invoke((MethodInvoker)delegate ()
                 {
                     button14.Enabled = true;
