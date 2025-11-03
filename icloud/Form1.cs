@@ -87,6 +87,238 @@ namespace icloud
             InitializeAutoUpdater();
 
         }
+        #region thêm cột ngày tháng trong datagridview
+        private DateTimePicker dtp = new DateTimePicker();
+        private Button btnClear = new Button();
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // Đăng ký events
+            dataGridView1.CellBeginEdit += dataGridView1_CellBeginEdit;
+            dataGridView1.CellEndEdit += dataGridView1_CellEndEdit;
+            dataGridView1.Scroll += dataGridView1_Scroll;
+            dataGridView1.KeyDown += dataGridView1_KeyDown;
+
+            // ===== THÊM EVENTS QUAN TRỌNG ĐỂ COMMIT DỮ LIỆU =====
+            dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
+            dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
+            dataGridView1.RowLeave += dataGridView1_RowLeave;
+
+            // Format cột ngày tháng
+            if (dataGridView1.Columns["NgayThang"] != null)
+            {
+                var column = dataGridView1.Columns["NgayThang"];
+                column.ValueType = typeof(DateTime);
+                column.DefaultCellStyle.Format = "dd/MM/yyyy";
+                column.DefaultCellStyle.NullValue = null;
+
+                // Đảm bảo không có time component
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    if (row.Cells["NgayThang"].Value != null && row.Cells["NgayThang"].Value != DBNull.Value)
+                    {
+                        if (DateTime.TryParse(row.Cells["NgayThang"].Value.ToString(), out DateTime existingDate))
+                        {
+                            row.Cells["NgayThang"].Value = existingDate.Date;
+                        }
+                    }
+                }
+            }
+
+            // Đảm bảo chỉ chọn từng cell
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            dataGridView1.MultiSelect = false;
+        }
+
+        // ===== THÊM CÁC EVENT HANDLERS ĐỂ COMMIT DỮ LIỆU =====
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // Commit ngay khi có thay đổi
+            if (sender is DataGridView dgv && e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                dgv.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                dgv.NotifyCurrentCellDirty(false);
+            }
+        }
+
+        private void dataGridView1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            // Commit khi cell dirty
+            if (dataGridView1.IsCurrentCellDirty)
+            {
+                dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void dataGridView1_RowLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            // Commit khi rời khỏi row
+            dataGridView1.EndEdit();
+            if (dataGridView1.DataSource is BindingSource bs)
+            {
+                bs.EndEdit();
+            }
+        }
+
+        private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (dataGridView1.CurrentCell != null &&
+                dataGridView1.Columns[dataGridView1.CurrentCell.ColumnIndex].Name == "NgayThang" &&
+                (e.KeyCode == System.Windows.Forms.Keys.Delete || e.KeyCode == System.Windows.Forms.Keys.Back))
+            {
+                // Chỉ xóa cell hiện tại, không xóa toàn bộ cột
+                dataGridView1[dataGridView1.CurrentCell.ColumnIndex, dataGridView1.CurrentCell.RowIndex].Value = DBNull.Value;
+
+                // ===== QUAN TRỌNG: COMMIT SAU KHI XÓA =====
+                dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                dataGridView1.NotifyCurrentCellDirty(false);
+
+                e.Handled = true;
+            }
+        }
+
+        private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "NgayThang")
+            {
+                Rectangle rect = dataGridView1.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+
+                // Thiết lập DateTimePicker
+                dtp.Size = new Size(rect.Width - 25, rect.Height);
+                dtp.Location = rect.Location;
+                dtp.Format = DateTimePickerFormat.Short;
+
+                // Thiết lập nút Clear
+                btnClear.Size = new Size(25, rect.Height);
+                btnClear.Location = new Point(rect.X + rect.Width - 25, rect.Y);
+                btnClear.Text = "X";
+                btnClear.Font = new Font("Arial", 8, FontStyle.Bold);
+                btnClear.BackColor = Color.LightCoral;
+                btnClear.ForeColor = Color.White;
+                btnClear.FlatStyle = FlatStyle.Flat;
+
+                // Gán giá trị hiện tại
+                var cellValue = dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+                if (cellValue != null && cellValue != DBNull.Value && !string.IsNullOrEmpty(cellValue.ToString()))
+                {
+                    DateTime dateValue;
+                    if (DateTime.TryParse(cellValue.ToString(), out dateValue))
+                    {
+                        dtp.Value = dateValue;
+                    }
+                    else
+                    {
+                        dtp.Value = DateTime.Now;
+                    }
+                }
+                else
+                {
+                    dtp.Value = DateTime.Now;
+                }
+
+                // Gỡ bỏ event cũ trước khi thêm mới (tránh duplicate events)
+                btnClear.Click -= BtnClear_Click;
+                btnClear.Click += BtnClear_Click;
+
+                // ===== THÊM EVENT CHO DATETIMEPICKER =====
+                dtp.ValueChanged -= Dtp_ValueChanged;
+                dtp.ValueChanged += Dtp_ValueChanged;
+
+                dataGridView1.Controls.Add(dtp);
+                dataGridView1.Controls.Add(btnClear);
+                dtp.BringToFront();
+                btnClear.BringToFront();
+
+                // SỬA: Sử dụng Invoke thay vì BeginInvoke để đồng bộ hơn
+                this.Invoke(new Action(() => dtp.Focus()));
+            }
+        }
+
+        // ===== THÊM EVENT CHO DATETIMEPICKER =====
+        private void Dtp_ValueChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentCell != null)
+            {
+                int currentRow = dataGridView1.CurrentCell.RowIndex;
+                int currentCol = dataGridView1.CurrentCell.ColumnIndex;
+
+                // Cập nhật giá trị ngay
+                dataGridView1[currentCol, currentRow].Value = dtp.Value.Date;
+                dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                dataGridView1.NotifyCurrentCellDirty(false);
+            }
+        }
+
+        // Event handler cho nút Clear
+        private void BtnClear_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentCell != null)
+            {
+                int currentRow = dataGridView1.CurrentCell.RowIndex;
+                int currentCol = dataGridView1.CurrentCell.ColumnIndex;
+
+                dataGridView1[currentCol, currentRow].Value = DBNull.Value;
+
+                // ===== QUAN TRỌNG: COMMIT SAU KHI CLEAR =====
+                dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                dataGridView1.NotifyCurrentCellDirty(false);
+
+                dataGridView1.Controls.Remove(dtp);
+                dataGridView1.Controls.Remove(btnClear);
+                dataGridView1.EndEdit();
+            }
+        }
+
+        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            // ===== XỬ LÝ TẤT CẢ CÁC CỘT, KHÔNG CHỈ NgayThang =====
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "NgayThang")
+            {
+                if (dataGridView1.Controls.Contains(dtp))
+                {
+                    // Chỉ lấy phần ngày tháng năm, bỏ giờ phút giây
+                    dataGridView1[e.ColumnIndex, e.RowIndex].Value = dtp.Value.Date;
+                    dataGridView1.Controls.Remove(dtp);
+                }
+                if (dataGridView1.Controls.Contains(btnClear))
+                {
+                    dataGridView1.Controls.Remove(btnClear);
+                }
+            }
+
+            // ===== QUAN TRỌNG: COMMIT CHO TẤT CẢ CÁC CỘT =====
+            dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            dataGridView1.NotifyCurrentCellDirty(false);
+
+            // Nếu có DataSource, commit luôn
+            if (dataGridView1.DataSource is BindingSource bs)
+            {
+                bs.EndEdit();
+            }
+            else if (dataGridView1.DataSource is DataTable dt)
+            {
+                dt.AcceptChanges();
+            }
+        }
+
+        private void dataGridView1_Scroll(object sender, ScrollEventArgs e)
+        {
+            // ===== COMMIT TRƯỚC KHI REMOVE CONTROLS =====
+            if (dataGridView1.Controls.Contains(dtp))
+            {
+                if (dataGridView1.CurrentCell != null)
+                {
+                    int currentRow = dataGridView1.CurrentCell.RowIndex;
+                    int currentCol = dataGridView1.CurrentCell.ColumnIndex;
+                    dataGridView1[currentCol, currentRow].Value = dtp.Value.Date;
+                    dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                }
+                dataGridView1.Controls.Remove(dtp);
+            }
+            if (dataGridView1.Controls.Contains(btnClear))
+                dataGridView1.Controls.Remove(btnClear);
+        }
+        #endregion
 
         private static readonly Dictionary<string, string> ModelMappings = new Dictionary<string, string>
     {

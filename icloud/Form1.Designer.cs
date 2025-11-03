@@ -62,22 +62,6 @@
             this.button4 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.maHD = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.khachHang = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tiencandong = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lydo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.chat = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.loiNhac = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.findIphone = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.tatRung = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.Online = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PhoneName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.userIcloud = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.passIcloud = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.deleteRow = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Move = new System.Windows.Forms.DataGridViewButtonColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.comboBoxUsername1 = new System.Windows.Forms.ComboBox();
             this.textBoxPass = new System.Windows.Forms.TextBox();
@@ -92,6 +76,22 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.button7 = new System.Windows.Forms.Button();
+            this.maHD = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.khachHang = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tiencandong = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lydo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.chat = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.loiNhac = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.findIphone = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.tatRung = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.Online = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PhoneName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.userIcloud = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.passIcloud = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.deleteRow = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.NgayThang = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Move = new System.Windows.Forms.DataGridViewButtonColumn();
             this.groupBox1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEnd)).BeginInit();
@@ -494,7 +494,7 @@
             this.passIcloud,
             this.deleteRow,
             this.Column1,
-            this.Column2,
+            this.NgayThang,
             this.Move});
             this.dataGridView1.Location = new System.Drawing.Point(147, 10);
             this.dataGridView1.Name = "dataGridView1";
@@ -503,125 +503,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(1289, 434);
             this.dataGridView1.TabIndex = 5;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
-            // 
-            // maHD
-            // 
-            this.maHD.HeaderText = "Mã HĐ";
-            this.maHD.MinimumWidth = 6;
-            this.maHD.Name = "maHD";
-            this.maHD.Width = 50;
-            // 
-            // khachHang
-            // 
-            this.khachHang.HeaderText = "Khách hàng";
-            this.khachHang.MinimumWidth = 6;
-            this.khachHang.Name = "khachHang";
-            this.khachHang.Width = 150;
-            // 
-            // tiencandong
-            // 
-            this.tiencandong.HeaderText = "Tiền cần đóng";
-            this.tiencandong.MinimumWidth = 6;
-            this.tiencandong.Name = "tiencandong";
-            this.tiencandong.Width = 45;
-            // 
-            // lydo
-            // 
-            this.lydo.HeaderText = "Lý do(Note)";
-            this.lydo.MinimumWidth = 6;
-            this.lydo.Name = "lydo";
-            this.lydo.Width = 180;
-            // 
-            // chat
-            // 
-            this.chat.HeaderText = "Mở Line";
-            this.chat.MinimumWidth = 6;
-            this.chat.Name = "chat";
-            this.chat.Text = "Mở";
-            this.chat.UseColumnTextForButtonValue = true;
-            this.chat.Width = 50;
-            // 
-            // loiNhac
-            // 
-            this.loiNhac.HeaderText = "Copy Lời Nhắc";
-            this.loiNhac.MinimumWidth = 6;
-            this.loiNhac.Name = "loiNhac";
-            this.loiNhac.Text = "Copy";
-            this.loiNhac.UseColumnTextForButtonValue = true;
-            this.loiNhac.Width = 50;
-            // 
-            // findIphone
-            // 
-            this.findIphone.HeaderText = "Rung";
-            this.findIphone.MinimumWidth = 6;
-            this.findIphone.Name = "findIphone";
-            this.findIphone.Text = "Rung";
-            this.findIphone.UseColumnTextForButtonValue = true;
-            this.findIphone.Width = 50;
-            // 
-            // tatRung
-            // 
-            this.tatRung.HeaderText = "Tắt Rung";
-            this.tatRung.MinimumWidth = 6;
-            this.tatRung.Name = "tatRung";
-            this.tatRung.Text = "Tắt Rung";
-            this.tatRung.UseColumnTextForButtonValue = true;
-            this.tatRung.Width = 60;
-            // 
-            // Online
-            // 
-            this.Online.HeaderText = "Trạng Thái";
-            this.Online.MinimumWidth = 6;
-            this.Online.Name = "Online";
-            this.Online.Width = 75;
-            // 
-            // PhoneName
-            // 
-            this.PhoneName.HeaderText = "Tên Phone";
-            this.PhoneName.MinimumWidth = 6;
-            this.PhoneName.Name = "PhoneName";
-            this.PhoneName.Width = 80;
-            // 
-            // userIcloud
-            // 
-            this.userIcloud.HeaderText = "User icloud";
-            this.userIcloud.MinimumWidth = 6;
-            this.userIcloud.Name = "userIcloud";
-            this.userIcloud.Width = 125;
-            // 
-            // passIcloud
-            // 
-            this.passIcloud.HeaderText = "Pass icloud";
-            this.passIcloud.MinimumWidth = 6;
-            this.passIcloud.Name = "passIcloud";
-            this.passIcloud.Width = 125;
-            // 
-            // deleteRow
-            // 
-            this.deleteRow.HeaderText = "Xóa";
-            this.deleteRow.MinimumWidth = 6;
-            this.deleteRow.Name = "deleteRow";
-            this.deleteRow.Text = "Xóa";
-            this.deleteRow.UseColumnTextForButtonValue = true;
-            this.deleteRow.Width = 60;
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "STT";
-            this.Column1.Name = "Column1";
-            this.Column1.Width = 30;
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Ngày Tháng";
-            this.Column2.Name = "Column2";
-            // 
-            // Move
-            // 
-            this.Move.HeaderText = "Chuyển";
-            this.Move.Name = "Move";
-            this.Move.Text = "Move";
-            this.Move.Width = 50;
             // 
             // label1
             // 
@@ -760,6 +641,125 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
+            // maHD
+            // 
+            this.maHD.HeaderText = "Mã HĐ";
+            this.maHD.MinimumWidth = 6;
+            this.maHD.Name = "maHD";
+            this.maHD.Width = 50;
+            // 
+            // khachHang
+            // 
+            this.khachHang.HeaderText = "Khách hàng";
+            this.khachHang.MinimumWidth = 6;
+            this.khachHang.Name = "khachHang";
+            this.khachHang.Width = 150;
+            // 
+            // tiencandong
+            // 
+            this.tiencandong.HeaderText = "Tiền cần đóng";
+            this.tiencandong.MinimumWidth = 6;
+            this.tiencandong.Name = "tiencandong";
+            this.tiencandong.Width = 45;
+            // 
+            // lydo
+            // 
+            this.lydo.HeaderText = "Lý do(Note)";
+            this.lydo.MinimumWidth = 6;
+            this.lydo.Name = "lydo";
+            this.lydo.Width = 180;
+            // 
+            // chat
+            // 
+            this.chat.HeaderText = "Mở Line";
+            this.chat.MinimumWidth = 6;
+            this.chat.Name = "chat";
+            this.chat.Text = "Mở";
+            this.chat.UseColumnTextForButtonValue = true;
+            this.chat.Width = 50;
+            // 
+            // loiNhac
+            // 
+            this.loiNhac.HeaderText = "Copy Lời Nhắc";
+            this.loiNhac.MinimumWidth = 6;
+            this.loiNhac.Name = "loiNhac";
+            this.loiNhac.Text = "Copy";
+            this.loiNhac.UseColumnTextForButtonValue = true;
+            this.loiNhac.Width = 50;
+            // 
+            // findIphone
+            // 
+            this.findIphone.HeaderText = "Rung";
+            this.findIphone.MinimumWidth = 6;
+            this.findIphone.Name = "findIphone";
+            this.findIphone.Text = "Rung";
+            this.findIphone.UseColumnTextForButtonValue = true;
+            this.findIphone.Width = 50;
+            // 
+            // tatRung
+            // 
+            this.tatRung.HeaderText = "Tắt Rung";
+            this.tatRung.MinimumWidth = 6;
+            this.tatRung.Name = "tatRung";
+            this.tatRung.Text = "Tắt Rung";
+            this.tatRung.UseColumnTextForButtonValue = true;
+            this.tatRung.Width = 60;
+            // 
+            // Online
+            // 
+            this.Online.HeaderText = "Trạng Thái";
+            this.Online.MinimumWidth = 6;
+            this.Online.Name = "Online";
+            this.Online.Width = 75;
+            // 
+            // PhoneName
+            // 
+            this.PhoneName.HeaderText = "Tên Phone";
+            this.PhoneName.MinimumWidth = 6;
+            this.PhoneName.Name = "PhoneName";
+            this.PhoneName.Width = 80;
+            // 
+            // userIcloud
+            // 
+            this.userIcloud.HeaderText = "User icloud";
+            this.userIcloud.MinimumWidth = 6;
+            this.userIcloud.Name = "userIcloud";
+            this.userIcloud.Width = 125;
+            // 
+            // passIcloud
+            // 
+            this.passIcloud.HeaderText = "Pass icloud";
+            this.passIcloud.MinimumWidth = 6;
+            this.passIcloud.Name = "passIcloud";
+            this.passIcloud.Width = 125;
+            // 
+            // deleteRow
+            // 
+            this.deleteRow.HeaderText = "Xóa";
+            this.deleteRow.MinimumWidth = 6;
+            this.deleteRow.Name = "deleteRow";
+            this.deleteRow.Text = "Xóa";
+            this.deleteRow.UseColumnTextForButtonValue = true;
+            this.deleteRow.Width = 60;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "STT";
+            this.Column1.Name = "Column1";
+            this.Column1.Width = 30;
+            // 
+            // NgayThang
+            // 
+            this.NgayThang.HeaderText = "Ngày Tháng";
+            this.NgayThang.Name = "NgayThang";
+            // 
+            // Move
+            // 
+            this.Move.HeaderText = "Chuyển";
+            this.Move.Name = "Move";
+            this.Move.Text = "Move";
+            this.Move.Width = 50;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -769,6 +769,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "DebtRaven";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -832,6 +833,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RichTextBox richTextBox2;
+        private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.DataGridViewTextBoxColumn maHD;
         private System.Windows.Forms.DataGridViewTextBoxColumn khachHang;
         private System.Windows.Forms.DataGridViewTextBoxColumn tiencandong;
@@ -846,10 +849,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn passIcloud;
         private System.Windows.Forms.DataGridViewButtonColumn deleteRow;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NgayThang;
         private System.Windows.Forms.DataGridViewButtonColumn Move;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
     }
 }
 
