@@ -85,6 +85,7 @@ namespace icloud
             SetupDataGridView();
             CheckAndValidateLicense();
             InitializeAutoUpdater();
+            comboBox1.SelectedIndex = 0;
 
         }
         #region thêm cột ngày tháng trong datagridview
@@ -1084,6 +1085,7 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                 public string NamePhoneChange { get; set; }
                 public string Note { get; set; }
                 public string Line { get; set; }
+                public string TenSo { get; set; }
 
                 public string date { get; set; }
             }
@@ -1451,6 +1453,18 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                                 }
                                 debtReminderInfo.Line = (text10 ?? "");
                                 debtReminderInfo.date = date;
+                                DataGridViewCell dataGridViewCell9 = dataGridViewRow.Cells[8];
+                                string text11;
+                                if (dataGridViewCell9 == null)
+                                {
+                                    text11 = null;
+                                }
+                                else
+                                {
+                                    object value8 = dataGridViewCell9.Value;
+                                    text11 = ((value8 != null) ? value8.ToString() : null);
+                                }
+                                debtReminderInfo.TenSo = (text11 ?? "");
                                 Form1.DebtReminderManager.DebtReminderInfo debtReminderInfo2 = debtReminderInfo;
                                 bool flag13 = !string.IsNullOrEmpty(debtReminderInfo2.TenKh) || !string.IsNullOrEmpty(debtReminderInfo2.userIcloud) || !string.IsNullOrEmpty(debtReminderInfo2.PassIcloud) || !string.IsNullOrEmpty(debtReminderInfo2.Note) || !string.IsNullOrEmpty(debtReminderInfo2.Line) || !string.IsNullOrEmpty(debtReminderInfo2.date) || !string.IsNullOrEmpty(debtReminderInfo2.NamePhoneChange);
                                 if (flag13)
@@ -1465,7 +1479,7 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                     foreach (KeyValuePair<string, Form1.DebtReminderManager.DebtReminderInfo> keyValuePair in this.debtData)
                     {
                         num++;
-                        string item = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}", new object[]
+                        string item = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}", new object[]
                         {
                             keyValuePair.Key,
                             keyValuePair.Value.Note,
@@ -1474,7 +1488,8 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                             keyValuePair.Value.NamePhoneChange,
                             num - 1,
                             keyValuePair.Value.Line,
-                            keyValuePair.Value.date
+                            keyValuePair.Value.date,
+                            keyValuePair.Value.TenSo
                         });
                         Form1.originalData.Add(item);
                     }
@@ -6869,6 +6884,7 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
         {
             Form1.shouldMerge = false;
             this.LoadDataByMonGoDB();
+            
         }
 
         private void LoadDataByMonGoDB()
@@ -6877,22 +6893,23 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
             try
             {
                 string text = "";
+                string selectedValue = comboBox1.SelectedItem?.ToString();
                 bool @checked = this.radioButtonLine1.Checked;
-                if (@checked)
+                if (@checked && selectedValue == null)
                 {
                     text = GetDataFromMongoDB1();
                 }
                 else
                 {
                     bool checked2 = this.radioButtonLine2.Checked;
-                    if (checked2)
+                    if (checked2 && selectedValue == null)
                     {
                         text = GetDataFromMongoDB2();
                     }
                     else
                     {
                         bool checked3 = radioButtonAll.Checked;
-                        if (checked3)
+                        if (checked3 && selectedValue == null)
                         {
                             text = GetDataFromMongoDBEveryDay();
                         }
@@ -6922,7 +6939,7 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                         foreach (KeyValuePair<string, Form1.DebtReminderManager.DebtReminderInfo> keyValuePair in dictionary)
                         {
                             num++;
-                            string item = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}", new object[]
+                            string item = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}", new object[]
                             {
                                 keyValuePair.Key,
                                 keyValuePair.Value.Note,
@@ -6931,7 +6948,8 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                                 keyValuePair.Value.NamePhoneChange,
                                 num - 1,
                                 keyValuePair.Value.Line,
-                                keyValuePair.Value.date
+                                keyValuePair.Value.date,
+                                keyValuePair.Value.TenSo
                             });
                             originalData.Add(item);
                         }
@@ -7207,6 +7225,7 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                 this.dataGridView1.Rows[index].Cells[11].Value = value.PassIcloud;
                 this.dataGridView1.Rows[index].Cells[13].Value = num - 1;
                 this.dataGridView1.Rows[index].Cells[14].Value = value.date;
+                this.dataGridView1.Rows[index].Cells[8].Value = value.TenSo;
             }
         }
 
@@ -7285,16 +7304,17 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                         foreach (KeyValuePair<string, Form1.DebtReminderManager.DebtReminderInfo> keyValuePair in dictionary)
                         {
                             num++;
-                            string item = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}", new object[]
+                            string item = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}", new object[]
                             {
-                        keyValuePair.Key,
-                        keyValuePair.Value.Note,
-                        keyValuePair.Value.userIcloud,
-                        keyValuePair.Value.PassIcloud,
-                        keyValuePair.Value.NamePhoneChange,
-                        num - 1,
-                        keyValuePair.Value.Line,
-                        keyValuePair.Value.date
+                                keyValuePair.Key,
+                                keyValuePair.Value.Note,
+                                keyValuePair.Value.userIcloud,
+                                keyValuePair.Value.PassIcloud,
+                                keyValuePair.Value.NamePhoneChange,
+                                num - 1,
+                                keyValuePair.Value.Line,
+                                keyValuePair.Value.date,
+                                keyValuePair.Value.TenSo
                             });
                             originalData.Add(item);
                         }

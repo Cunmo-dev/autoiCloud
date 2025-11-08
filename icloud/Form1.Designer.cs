@@ -92,6 +92,7 @@
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NgayThang = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Move = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEnd)).BeginInit();
@@ -136,7 +137,7 @@
             this.radioButton2.AutoSize = true;
             this.radioButton2.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.radioButton2.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.radioButton2.Location = new System.Drawing.Point(1263, 483);
+            this.radioButton2.Location = new System.Drawing.Point(1244, 504);
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(81, 17);
             this.radioButton2.TabIndex = 27;
@@ -150,7 +151,7 @@
             this.radioButton1.AutoSize = true;
             this.radioButton1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.radioButton1.ForeColor = System.Drawing.Color.Snow;
-            this.radioButton1.Location = new System.Drawing.Point(1263, 460);
+            this.radioButton1.Location = new System.Drawing.Point(1244, 481);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(81, 17);
             this.radioButton1.TabIndex = 26;
@@ -162,9 +163,9 @@
             // richTextBox2
             // 
             this.richTextBox2.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.richTextBox2.Location = new System.Drawing.Point(1359, 450);
+            this.richTextBox2.Location = new System.Drawing.Point(1339, 470);
             this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(77, 188);
+            this.richTextBox2.Size = new System.Drawing.Size(97, 168);
             this.richTextBox2.TabIndex = 25;
             this.richTextBox2.Text = "";
             this.richTextBox2.TextChanged += new System.EventHandler(this.richTextBox2_TextChanged);
@@ -172,6 +173,7 @@
             // groupBox5
             // 
             this.groupBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.groupBox5.Controls.Add(this.comboBox1);
             this.groupBox5.Controls.Add(this.radioButtonxoa);
             this.groupBox5.Controls.Add(this.radioButtonAll);
             this.groupBox5.Controls.Add(this.radioButtonLine2);
@@ -185,9 +187,9 @@
             this.groupBox5.Controls.Add(this.button13);
             this.groupBox5.Controls.Add(this.button14);
             this.groupBox5.Controls.Add(this.button5);
-            this.groupBox5.Location = new System.Drawing.Point(6, 230);
+            this.groupBox5.Location = new System.Drawing.Point(7, 230);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(135, 214);
+            this.groupBox5.Size = new System.Drawing.Size(135, 234);
             this.groupBox5.TabIndex = 24;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "VIP";
@@ -195,7 +197,7 @@
             // radioButtonxoa
             // 
             this.radioButtonxoa.AutoSize = true;
-            this.radioButtonxoa.Location = new System.Drawing.Point(84, 187);
+            this.radioButtonxoa.Location = new System.Drawing.Point(82, 207);
             this.radioButtonxoa.Name = "radioButtonxoa";
             this.radioButtonxoa.Size = new System.Drawing.Size(44, 17);
             this.radioButtonxoa.TabIndex = 21;
@@ -206,7 +208,7 @@
             // 
             this.radioButtonAll.AutoSize = true;
             this.radioButtonAll.Checked = true;
-            this.radioButtonAll.Location = new System.Drawing.Point(10, 187);
+            this.radioButtonAll.Location = new System.Drawing.Point(8, 207);
             this.radioButtonAll.Name = "radioButtonAll";
             this.radioButtonAll.Size = new System.Drawing.Size(79, 17);
             this.radioButtonAll.TabIndex = 20;
@@ -217,7 +219,7 @@
             // radioButtonLine2
             // 
             this.radioButtonLine2.AutoSize = true;
-            this.radioButtonLine2.Location = new System.Drawing.Point(76, 164);
+            this.radioButtonLine2.Location = new System.Drawing.Point(74, 184);
             this.radioButtonLine2.Name = "radioButtonLine2";
             this.radioButtonLine2.Size = new System.Drawing.Size(54, 17);
             this.radioButtonLine2.TabIndex = 19;
@@ -227,7 +229,7 @@
             // radioButtonLine1
             // 
             this.radioButtonLine1.AutoSize = true;
-            this.radioButtonLine1.Location = new System.Drawing.Point(10, 165);
+            this.radioButtonLine1.Location = new System.Drawing.Point(8, 185);
             this.radioButtonLine1.Name = "radioButtonLine1";
             this.radioButtonLine1.Size = new System.Drawing.Size(54, 17);
             this.radioButtonLine1.TabIndex = 18;
@@ -449,7 +451,7 @@
             this.button4.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button4.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.button4.Location = new System.Drawing.Point(1275, 600);
+            this.button4.Location = new System.Drawing.Point(1255, 593);
             this.button4.Margin = new System.Windows.Forms.Padding(0);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(59, 28);
@@ -466,9 +468,9 @@
             this.richTextBox1.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBox1.ForeColor = System.Drawing.Color.Lime;
-            this.richTextBox1.Location = new System.Drawing.Point(6, 450);
+            this.richTextBox1.Location = new System.Drawing.Point(6, 470);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(1347, 188);
+            this.richTextBox1.Size = new System.Drawing.Size(1327, 168);
             this.richTextBox1.TabIndex = 9;
             this.richTextBox1.Text = "";
             // 
@@ -500,7 +502,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.Size = new System.Drawing.Size(1289, 434);
+            this.dataGridView1.Size = new System.Drawing.Size(1289, 454);
             this.dataGridView1.TabIndex = 5;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             // 
@@ -568,7 +570,7 @@
             this.groupBox2.Controls.Add(this.textBoxPassIcloud);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Location = new System.Drawing.Point(23, 273);
+            this.groupBox2.Location = new System.Drawing.Point(13, 260);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(111, 65);
             this.groupBox2.TabIndex = 6;
@@ -756,9 +758,26 @@
             // Move
             // 
             this.Move.HeaderText = "Chuyển";
+            this.Move.MinimumWidth = 6;
             this.Move.Name = "Move";
             this.Move.Text = "Move";
-            this.Move.Width = 50;
+            this.Move.UseColumnTextForButtonValue = true;
+            this.Move.Width = 60;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "None",
+            "Quá Hạn Sổ 1",
+            "Quá Hạn Sổ 2",
+            "Quá Hạn Sổ 3",
+            "Quá Hạn Sổ 6",
+            "Quá Hạn Sổ 7"});
+            this.comboBox1.Location = new System.Drawing.Point(8, 160);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 22;
             // 
             // Form1
             // 
@@ -851,6 +870,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn NgayThang;
         private System.Windows.Forms.DataGridViewButtonColumn Move;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
 
