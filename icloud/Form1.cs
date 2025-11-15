@@ -1586,97 +1586,184 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                 return result;
             }
 
+            //public bool SaveDataMongoDB(bool shouldMerge)
+            //{
+            //    bool result;
+            //    try
+            //    {
+            //        string text = JsonConvert.SerializeObject(this.debtData, Formatting.Indented);
+            //        string text2 = "mongodb+srv://banhmichaothuongnhoicloud:8390813asd@cluster0.srtd7rc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+            //        MongoClientSettings mongoClientSettings = MongoClientSettings.FromConnectionString(text2);
+            //        mongoClientSettings.ServerApi = new ServerApi(ServerApiVersion.V1, default(Optional<bool?>), default(Optional<bool?>));
+            //        MongoClient mongoClient = new MongoClient(mongoClientSettings);
+            //        IMongoDatabase database = mongoClient.GetDatabase("duLieuAPP", null);
+            //        IMongoCollection<Form1.DebtReminderManager.dataRungIcloud> collection = database.GetCollection<Form1.DebtReminderManager.dataRungIcloud>("dataRung", null);
+            //        FilterDefinition<Form1.DebtReminderManager.dataRungIcloud> filterDefinition = Builders<Form1.DebtReminderManager.dataRungIcloud>.Filter.Eq<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Name, "dulieuhangngay");
+            //        Form1.DebtReminderManager.dataRungIcloud dataRungIcloud = IFindFluentExtensions.FirstOrDefault<Form1.DebtReminderManager.dataRungIcloud, Form1.DebtReminderManager.dataRungIcloud>(IMongoCollectionExtensions.Find<Form1.DebtReminderManager.dataRungIcloud>(collection, filterDefinition, null), default(CancellationToken));
+            //        bool flag = dataRungIcloud != null;
+            //        if (flag)
+            //        {
+            //            if (shouldMerge)
+            //            {
+            //                JObject jobject = JObject.Parse(dataRungIcloud.Data);
+            //                JObject jobject2 = JObject.Parse(text);
+            //                jobject.Merge(jobject2, new JsonMergeSettings
+            //                {
+            //                    MergeArrayHandling = MergeArrayHandling.Union  // ← Sửa ở đây
+            //                });
+            //                string text3 = jobject.ToString(Formatting.None);
+            //                UpdateDefinition<Form1.DebtReminderManager.dataRungIcloud> updateDefinition = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Data, text3);
+            //                collection.UpdateOne(filterDefinition, updateDefinition, null, default(CancellationToken));
+            //                Console.WriteLine("Đã merge dữ liệu mới vào dữ liệu cũ");
+            //            }
+            //            else
+            //            {
+            //                UpdateDefinition<Form1.DebtReminderManager.dataRungIcloud> updateDefinition2 = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Data, text);
+            //                collection.UpdateOne(filterDefinition, updateDefinition2, null, default(CancellationToken));
+            //                Console.WriteLine("Đã thay thế hoàn toàn dữ liệu cũ");
+            //            }
+            //        }
+            //        else
+            //        {
+            //            Form1.DebtReminderManager.dataRungIcloud dataRungIcloud2 = new Form1.DebtReminderManager.dataRungIcloud
+            //            {
+            //                Name = "dulieuhangngay",
+            //                Data = text
+            //            };
+            //            collection.InsertOne(dataRungIcloud2, null, default(CancellationToken));
+            //        }
+            //        string str = DateTime.Now.ToString("_dd_MM_yyyy_HH_mm_ss");
+            //        IMongoCollection<Form1.DebtReminderManager.dataRungIcloud> collection2 = database.GetCollection<Form1.DebtReminderManager.dataRungIcloud>("DataBackup", null);
+            //        FilterDefinition<Form1.DebtReminderManager.dataRungIcloud> filterDefinition2 = Builders<Form1.DebtReminderManager.dataRungIcloud>.Filter.Eq<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Name, "dulieuhangngay" + str);
+            //        Form1.DebtReminderManager.dataRungIcloud dataRungIcloud3 = IFindFluentExtensions.FirstOrDefault<Form1.DebtReminderManager.dataRungIcloud, Form1.DebtReminderManager.dataRungIcloud>(IMongoCollectionExtensions.Find<Form1.DebtReminderManager.dataRungIcloud>(collection, filterDefinition2, null), default(CancellationToken));
+            //        bool flag2 = dataRungIcloud3 != null;
+            //        if (flag2)
+            //        {
+            //            if (shouldMerge)
+            //            {
+            //                JObject jobject3 = JObject.Parse(dataRungIcloud.Data);
+            //                JObject jobject4 = JObject.Parse(text);
+            //                jobject3.Merge(jobject4, new JsonMergeSettings
+            //                {
+            //                    MergeArrayHandling = MergeArrayHandling.Union  // ← Sửa ở đây
+            //                });
+            //                string text4 = jobject3.ToString(0, Array.Empty<JsonConverter>());
+            //                UpdateDefinition<Form1.DebtReminderManager.dataRungIcloud> updateDefinition3 = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Data, text4);
+            //                collection2.UpdateOne(filterDefinition2, updateDefinition3, null, default(CancellationToken));
+            //                Console.WriteLine("Đã merge dữ liệu mới vào dữ liệu cũ");
+            //            }
+            //            else
+            //            {
+            //                UpdateDefinition<Form1.DebtReminderManager.dataRungIcloud> updateDefinition4 = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Data, text);
+            //                collection2.UpdateOne(filterDefinition2, updateDefinition4, null, default(CancellationToken));
+            //                Console.WriteLine("Đã thay thế hoàn toàn dữ liệu cũ");
+            //            }
+            //        }
+            //        else
+            //        {
+            //            Form1.DebtReminderManager.dataRungIcloud dataRungIcloud4 = new Form1.DebtReminderManager.dataRungIcloud
+            //            {
+            //                Name = "dulieuhangngay" + str,
+            //                Data = text
+            //            };
+            //            collection2.InsertOne(dataRungIcloud4, null, default(CancellationToken));
+            //        }
+            //        this.CleanupOldBackupData(collection2, "4");
+            //        result = true;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show("Lỗi khi lưu dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            //        result = false;
+            //    }
+            //    return result;
+            //}
+
             public bool SaveDataMongoDB(bool shouldMerge)
             {
-                bool result;
                 try
                 {
-                    string text = JsonConvert.SerializeObject(this.debtData, Formatting.Indented);
-                    string text2 = "mongodb+srv://banhmichaothuongnhoicloud:8390813asd@cluster0.srtd7rc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-                    MongoClientSettings mongoClientSettings = MongoClientSettings.FromConnectionString(text2);
-                    mongoClientSettings.ServerApi = new ServerApi(ServerApiVersion.V1, default(Optional<bool?>), default(Optional<bool?>));
-                    MongoClient mongoClient = new MongoClient(mongoClientSettings);
-                    IMongoDatabase database = mongoClient.GetDatabase("duLieuAPP", null);
-                    IMongoCollection<Form1.DebtReminderManager.dataRungIcloud> collection = database.GetCollection<Form1.DebtReminderManager.dataRungIcloud>("dataRung", null);
-                    FilterDefinition<Form1.DebtReminderManager.dataRungIcloud> filterDefinition = Builders<Form1.DebtReminderManager.dataRungIcloud>.Filter.Eq<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Name, "dulieuhangngay");
-                    Form1.DebtReminderManager.dataRungIcloud dataRungIcloud = IFindFluentExtensions.FirstOrDefault<Form1.DebtReminderManager.dataRungIcloud, Form1.DebtReminderManager.dataRungIcloud>(IMongoCollectionExtensions.Find<Form1.DebtReminderManager.dataRungIcloud>(collection, filterDefinition, null), default(CancellationToken));
-                    bool flag = dataRungIcloud != null;
-                    if (flag)
+                    // Serialize dữ liệu
+                    string jsonData = JsonConvert.SerializeObject(this.debtData, Formatting.Indented);
+
+                    // Khởi tạo MongoDB client
+                    string connectionString = "mongodb+srv://banhmichaothuongnhoicloud:8390813asd@cluster0.srtd7rc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+                    var settings = MongoClientSettings.FromConnectionString(connectionString);
+                    settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+                    var client = new MongoClient(settings);
+                    var database = client.GetDatabase("duLieuAPP");
+
+                    // === Lưu vào collection chính (dataRung) ===
+                    var mainCollection = database.GetCollection<Form1.DebtReminderManager.dataRungIcloud>("dataRung");
+                    var mainFilter = Builders<Form1.DebtReminderManager.dataRungIcloud>.Filter.Eq(x => x.Name, "dulieuhangngay");
+                    var existingMain = mainCollection.Find(mainFilter).FirstOrDefault();
+
+                    if (existingMain != null)
                     {
-                        if (shouldMerge)
-                        {
-                            JObject jobject = JObject.Parse(dataRungIcloud.Data);
-                            JObject jobject2 = JObject.Parse(text);
-                            jobject.Merge(jobject2, new JsonMergeSettings
-                            {
-                                MergeArrayHandling = MergeArrayHandling.Union  // ← Sửa ở đây
-                            });
-                            string text3 = jobject.ToString(Formatting.None);
-                            UpdateDefinition<Form1.DebtReminderManager.dataRungIcloud> updateDefinition = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Data, text3);
-                            collection.UpdateOne(filterDefinition, updateDefinition, null, default(CancellationToken));
-                            Console.WriteLine("Đã merge dữ liệu mới vào dữ liệu cũ");
-                        }
-                        else
-                        {
-                            UpdateDefinition<Form1.DebtReminderManager.dataRungIcloud> updateDefinition2 = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Data, text);
-                            collection.UpdateOne(filterDefinition, updateDefinition2, null, default(CancellationToken));
-                            Console.WriteLine("Đã thay thế hoàn toàn dữ liệu cũ");
-                        }
+                        string dataToSave = shouldMerge ? MergeJsonData(existingMain.Data, jsonData) : jsonData;
+                        var update = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set(x => x.Data, dataToSave);
+                        mainCollection.UpdateOne(mainFilter, update);
+                        Console.WriteLine(shouldMerge ? "Đã merge dữ liệu mới vào dữ liệu cũ" : "Đã thay thế hoàn toàn dữ liệu cũ");
                     }
                     else
                     {
-                        Form1.DebtReminderManager.dataRungIcloud dataRungIcloud2 = new Form1.DebtReminderManager.dataRungIcloud
+                        mainCollection.InsertOne(new Form1.DebtReminderManager.dataRungIcloud
                         {
                             Name = "dulieuhangngay",
-                            Data = text
-                        };
-                        collection.InsertOne(dataRungIcloud2, null, default(CancellationToken));
+                            Data = jsonData
+                        });
                     }
-                    string str = DateTime.Now.ToString("_dd_MM_yyyy_HH_mm_ss");
-                    IMongoCollection<Form1.DebtReminderManager.dataRungIcloud> collection2 = database.GetCollection<Form1.DebtReminderManager.dataRungIcloud>("DataBackup", null);
-                    FilterDefinition<Form1.DebtReminderManager.dataRungIcloud> filterDefinition2 = Builders<Form1.DebtReminderManager.dataRungIcloud>.Filter.Eq<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Name, "dulieuhangngay" + str);
-                    Form1.DebtReminderManager.dataRungIcloud dataRungIcloud3 = IFindFluentExtensions.FirstOrDefault<Form1.DebtReminderManager.dataRungIcloud, Form1.DebtReminderManager.dataRungIcloud>(IMongoCollectionExtensions.Find<Form1.DebtReminderManager.dataRungIcloud>(collection, filterDefinition2, null), default(CancellationToken));
-                    bool flag2 = dataRungIcloud3 != null;
-                    if (flag2)
+
+                    // === Lưu vào collection backup (DataBackup) ===
+                    var backupCollection = database.GetCollection<Form1.DebtReminderManager.dataRungIcloud>("DataBackup");
+                    string backupName = "dulieuhangngay" + DateTime.Now.ToString("_dd_MM_yyyy_HH_mm_ss");
+                    var backupFilter = Builders<Form1.DebtReminderManager.dataRungIcloud>.Filter.Eq(x => x.Name, backupName);
+                    var existingBackup = backupCollection.Find(backupFilter).FirstOrDefault();
+
+                    if (existingBackup != null)
                     {
-                        if (shouldMerge)
-                        {
-                            JObject jobject3 = JObject.Parse(dataRungIcloud.Data);
-                            JObject jobject4 = JObject.Parse(text);
-                            jobject3.Merge(jobject4, new JsonMergeSettings
-                            {
-                                MergeArrayHandling = MergeArrayHandling.Union  // ← Sửa ở đây
-                            });
-                            string text4 = jobject3.ToString(0, Array.Empty<JsonConverter>());
-                            UpdateDefinition<Form1.DebtReminderManager.dataRungIcloud> updateDefinition3 = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Data, text4);
-                            collection2.UpdateOne(filterDefinition2, updateDefinition3, null, default(CancellationToken));
-                            Console.WriteLine("Đã merge dữ liệu mới vào dữ liệu cũ");
-                        }
-                        else
-                        {
-                            UpdateDefinition<Form1.DebtReminderManager.dataRungIcloud> updateDefinition4 = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Data, text);
-                            collection2.UpdateOne(filterDefinition2, updateDefinition4, null, default(CancellationToken));
-                            Console.WriteLine("Đã thay thế hoàn toàn dữ liệu cũ");
-                        }
+                        string dataToSave = shouldMerge ? MergeJsonData(existingBackup.Data, jsonData) : jsonData;
+                        var update = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set(x => x.Data, dataToSave);
+                        backupCollection.UpdateOne(backupFilter, update);
                     }
                     else
                     {
-                        Form1.DebtReminderManager.dataRungIcloud dataRungIcloud4 = new Form1.DebtReminderManager.dataRungIcloud
+                        backupCollection.InsertOne(new Form1.DebtReminderManager.dataRungIcloud
                         {
-                            Name = "dulieuhangngay" + str,
-                            Data = text
-                        };
-                        collection2.InsertOne(dataRungIcloud4, null, default(CancellationToken));
+                            Name = backupName,
+                            Data = jsonData
+                        });
                     }
-                    this.CleanupOldBackupData(collection2, "4");
-                    result = true;
+
+                    // Dọn dẹp backup cũ
+                    this.CleanupOldBackupData(backupCollection, "4");
+
+                    return true;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Lỗi khi lưu dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    result = false;
+                    MessageBox.Show($"Lỗi khi lưu dữ liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    return false;
                 }
-                return result;
+            }
+
+            // Helper method để merge JSON - Giữ nguyên dữ liệu cũ, chỉ thêm key mới
+            private string MergeJsonData(string existingJson, string newJson)
+            {
+                var existingDict = JsonConvert.DeserializeObject<Dictionary<string, DebtReminderInfo>>(existingJson);
+                var newDict = JsonConvert.DeserializeObject<Dictionary<string, DebtReminderInfo>>(newJson);
+
+                // Chỉ thêm những key CHƯA có trong dữ liệu cũ
+                foreach (var kvp in newDict)
+                {
+                    if (!existingDict.ContainsKey(kvp.Key))
+                    {
+                        existingDict[kvp.Key] = kvp.Value;
+                    }
+                    // Nếu key đã tồn tại thì BỎ QUA (giữ nguyên dữ liệu cũ)
+                }
+
+                return JsonConvert.SerializeObject(existingDict, Formatting.None);
             }
             public bool SaveDataMongoDB2()
             {
@@ -6895,21 +6982,21 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                 string text = "";
                 string selectedValue = comboBox1.SelectedItem?.ToString();
                 bool @checked = this.radioButtonLine1.Checked;
-                if (@checked && selectedValue == null)
+                if (@checked && selectedValue == "None")
                 {
                     text = GetDataFromMongoDB1();
                 }
                 else
                 {
                     bool checked2 = this.radioButtonLine2.Checked;
-                    if (checked2 && selectedValue == null)
+                    if (checked2 && selectedValue == "None")
                     {
                         text = GetDataFromMongoDB2();
                     }
                     else
                     {
                         bool checked3 = radioButtonAll.Checked;
-                        if (checked3 && selectedValue == null)
+                        if (checked3 && selectedValue == "None")
                         {
                             text = GetDataFromMongoDBEveryDay();
                         }
