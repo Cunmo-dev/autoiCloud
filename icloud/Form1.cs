@@ -52,6 +52,7 @@ namespace icloud
         private Random random = new Random();
         private string filePath;
         private static bool shouldMerge = false;
+        private static bool checkQuaHan = false;
         bool bRunning = false; // dùng biến này để kiểm tra xem chương trình có chạy k
         private static object locker = new object(); // tránh xung đột luồng
         // Dictionary để map mã đơn hàng với index thực tế trong originalData
@@ -1257,267 +1258,218 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                 bool result;
                 try
                 {
+                    // Commit các thay đổi trong DataGridView
                     dataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
                     dataGridView.NotifyCurrentCellDirty(false);
                     Application.DoEvents();
+
+                    // Xóa file JSON cũ nếu cần
                     if (deleteOldFile)
                     {
-                        bool flag = !this.DeleteOldJsonFile();
-                        if (flag)
+                        bool deleteSuccess = this.DeleteOldJsonFile();
+                        if (!deleteSuccess)
                         {
                             return false;
                         }
                         this.debtData.Clear();
                     }
-                    foreach (object obj in ((IEnumerable)dataGridView.Rows))
+
+                    // Duyệt qua từng dòng trong DataGridView
+                    foreach (object rowObj in ((IEnumerable)dataGridView.Rows))
                     {
-                        DataGridViewRow dataGridViewRow = (DataGridViewRow)obj;
-                        bool isNewRow = dataGridViewRow.IsNewRow;
-                        if (!isNewRow)
+                        DataGridViewRow row = (DataGridViewRow)rowObj;
+
+                        // Bỏ qua dòng mới (dòng trống để thêm dữ liệu)
+                        if (row.IsNewRow)
                         {
-                            DataGridViewCell dataGridViewCell = dataGridViewRow.Cells["MaHD"];
-                            string text;
-                            if (dataGridViewCell == null)
+                            continue;
+                        }
+
+                        // Lấy mã hợp đồng từ cột "MaHD"
+                        DataGridViewCell contractCodeCell = row.Cells["MaHD"];
+                        string contractCode = contractCodeCell?.Value?.ToString();
+
+                        // Bỏ qua nếu không có mã hợp đồng
+                        if (string.IsNullOrEmpty(contractCode))
+                        {
+                            continue;
+                        }
+
+                        // Lấy tên khách hàng từ cột 1
+                        DataGridViewCell customerNameCell = row.Cells[1];
+                        string customerName = customerNameCell?.Value?.ToString() ?? "";
+
+                        // Tạo key duy nhất từ mã hợp đồng và tên khách hàng
+                        string uniqueKey = contractCode + "|" + customerName;
+
+                        // Xử lý ngày tháng từ cột 14
+                        string formattedDate = "";
+                        DataGridViewCell dateCell = row.Cells[14];
+                        object dateValue = dateCell?.Value;
+
+                        if (dateValue != null && dateValue != DBNull.Value)
+                        {
+                            // Nếu giá trị là kiểu DateTime
+                            if (dateValue is DateTime)
                             {
-                                text = null;
+                                DateTime dateTime = (DateTime)dateValue;
+                                formattedDate = dateTime.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
                             }
                             else
                             {
-                                object value = dataGridViewCell.Value;
-                                text = ((value != null) ? value.ToString() : null);
-                            }
-                            string text2 = text;
-                            bool flag2 = string.IsNullOrEmpty(text2);
-                            if (!flag2)
-                            {
-                                DataGridViewCell dataGridViewCell2 = dataGridViewRow.Cells[1];
-                                string text3;
-                                if (dataGridViewCell2 == null)
+                                // Nếu giá trị là chuỗi, cần parse
+                                string dateString = dateValue.ToString().Trim();
+
+                                if (!string.IsNullOrEmpty(dateString))
                                 {
-                                    text3 = null;
-                                }
-                                else
-                                {
-                                    object value2 = dataGridViewCell2.Value;
-                                    text3 = ((value2 != null) ? value2.ToString() : null);
-                                }
-                                string text4 = text3 ?? "";
-                                string key = text2 + "|" + text4;
-                                string date = "";
-                                DataGridViewCell dataGridViewCell3 = dataGridViewRow.Cells[14];
-                                object obj2 = (dataGridViewCell3 != null) ? dataGridViewCell3.Value : null;
-                                bool flag3 = obj2 != null && obj2 != DBNull.Value;
-                                if (flag3)
-                                {
-                                    DateTime dateTime = DateTime.MinValue; // ← Khởi tạo giá trị mặc định
-                                    bool flag4;
-                                    if (obj2 is DateTime)
+                                    // Các định dạng ngày có thể có
+                                    string[] dateFormats = new string[]
                                     {
-                                        dateTime = (DateTime)obj2;
-                                        flag4 = true;
-                                    }
-                                    else
+                            "dd/MM/yyyy", "d/MM/yyyy", "dd/M/yyyy", "d/M/yyyy",
+                            "dd-MM-yyyy", "d-MM-yyyy", "dd-M-yyyy", "d-M-yyyy",
+                            "yyyy-MM-dd",
+                            "dd/MM/yy", "d/MM/yy", "dd/M/yy", "d/M/yy"
+                                    };
+
+                                    bool dateParseSuccess = false;
+
+                                    // Thử parse với các định dạng có sẵn
+                                    foreach (string format in dateFormats)
                                     {
-                                        flag4 = false;
-                                    }
-                                    bool flag5 = flag4;
-                                    if (flag5)
-                                    {
-                                        date = dateTime.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-                                    }
-                                    else
-                                    {
-                                        string text5 = obj2.ToString().Trim();
-                                        bool flag6 = !string.IsNullOrEmpty(text5);
-                                        if (flag6)
+                                        DateTime parsedDate;
+                                        if (DateTime.TryParseExact(dateString, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
                                         {
-                                            string[] array = new string[]
-                                            {
-                                                "dd/MM/yyyy",
-                                                "d/MM/yyyy",
-                                                "dd/M/yyyy",
-                                                "d/M/yyyy",
-                                                "dd-MM-yyyy",
-                                                "d-MM-yyyy",
-                                                "dd-M-yyyy",
-                                                "d-M-yyyy",
-                                                "yyyy-MM-dd",
-                                                "dd/MM/yy",
-                                                "d/MM/yy",
-                                                "dd/M/yy",
-                                                "d/M/yy"
-                                            };
-                                            bool flag7 = false;
-                                            foreach (string format in array)
-                                            {
-                                                DateTime dateTime2;
-                                                bool flag8 = DateTime.TryParseExact(text5, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime2);
-                                                if (flag8)
-                                                {
-                                                    date = dateTime2.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-                                                    flag7 = true;
-                                                    break;
-                                                }
-                                            }
-                                            bool flag9 = !flag7;
-                                            if (flag9)
-                                            {
-                                                CultureInfo provider = new CultureInfo("vi-VN");
-                                                DateTime dateTime2;
-                                                bool flag10 = DateTime.TryParse(text5, provider, DateTimeStyles.None, out dateTime2);
-                                                if (flag10)
-                                                {
-                                                    date = dateTime2.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-                                                    flag7 = true;
-                                                }
-                                            }
-                                            bool flag11 = !flag7;
-                                            if (flag11)
-                                            {
-                                                date = text5;
-                                            }
+                                            formattedDate = parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                            dateParseSuccess = true;
+                                            break;
                                         }
                                     }
-                                }
-                                bool flag12 = line == "3";
-                                string namePhoneChange;
-                                if (flag12)
-                                {
-                                    namePhoneChange = "NT LẦN 1";
-                                }
-                                else
-                                {
-                                    DataGridViewCell dataGridViewCell4 = dataGridViewRow.Cells[9];
-                                    string text6;
-                                    if (dataGridViewCell4 == null)
+
+                                    // Nếu chưa parse được, thử với culture Việt Nam
+                                    if (!dateParseSuccess)
                                     {
-                                        text6 = null;
+                                        CultureInfo vietnameseCulture = new CultureInfo("vi-VN");
+                                        DateTime parsedDate;
+
+                                        if (DateTime.TryParse(dateString, vietnameseCulture, DateTimeStyles.None, out parsedDate))
+                                        {
+                                            formattedDate = parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                            dateParseSuccess = true;
+                                        }
                                     }
-                                    else
+
+                                    // Nếu vẫn không parse được, giữ nguyên chuỗi gốc
+                                    if (!dateParseSuccess)
                                     {
-                                        object value3 = dataGridViewCell4.Value;
-                                        text6 = ((value3 != null) ? value3.ToString() : null);
+                                        formattedDate = dateString;
                                     }
-                                    namePhoneChange = (text6 ?? "");
-                                }
-                                Form1.DebtReminderManager.DebtReminderInfo debtReminderInfo = new Form1.DebtReminderManager.DebtReminderInfo();
-                                debtReminderInfo.MaHD = text2;
-                                debtReminderInfo.TenKh = text4;
-                                DataGridViewCell dataGridViewCell5 = dataGridViewRow.Cells[10];
-                                string text7;
-                                if (dataGridViewCell5 == null)
-                                {
-                                    text7 = null;
-                                }
-                                else
-                                {
-                                    object value4 = dataGridViewCell5.Value;
-                                    text7 = ((value4 != null) ? value4.ToString() : null);
-                                }
-                                debtReminderInfo.userIcloud = (text7 ?? "");
-                                DataGridViewCell dataGridViewCell6 = dataGridViewRow.Cells[11];
-                                string text8;
-                                if (dataGridViewCell6 == null)
-                                {
-                                    text8 = null;
-                                }
-                                else
-                                {
-                                    object value5 = dataGridViewCell6.Value;
-                                    text8 = ((value5 != null) ? value5.ToString() : null);
-                                }
-                                debtReminderInfo.PassIcloud = (text8 ?? "");
-                                debtReminderInfo.NamePhoneChange = namePhoneChange;
-                                DataGridViewCell dataGridViewCell7 = dataGridViewRow.Cells[3];
-                                string text9;
-                                if (dataGridViewCell7 == null)
-                                {
-                                    text9 = null;
-                                }
-                                else
-                                {
-                                    object value6 = dataGridViewCell7.Value;
-                                    text9 = ((value6 != null) ? value6.ToString() : null);
-                                }
-                                debtReminderInfo.Note = (text9 ?? "");
-                                DataGridViewCell dataGridViewCell8 = dataGridViewRow.Cells[2];
-                                string text10;
-                                if (dataGridViewCell8 == null)
-                                {
-                                    text10 = null;
-                                }
-                                else
-                                {
-                                    object value7 = dataGridViewCell8.Value;
-                                    text10 = ((value7 != null) ? value7.ToString() : null);
-                                }
-                                debtReminderInfo.Line = (text10 ?? "");
-                                debtReminderInfo.date = date;
-                                DataGridViewCell dataGridViewCell9 = dataGridViewRow.Cells[8];
-                                string text11;
-                                if (dataGridViewCell9 == null)
-                                {
-                                    text11 = null;
-                                }
-                                else
-                                {
-                                    object value8 = dataGridViewCell9.Value;
-                                    text11 = ((value8 != null) ? value8.ToString() : null);
-                                }
-                                debtReminderInfo.TenSo = (text11 ?? "");
-                                Form1.DebtReminderManager.DebtReminderInfo debtReminderInfo2 = debtReminderInfo;
-                                bool flag13 = !string.IsNullOrEmpty(debtReminderInfo2.TenKh) || !string.IsNullOrEmpty(debtReminderInfo2.userIcloud) || !string.IsNullOrEmpty(debtReminderInfo2.PassIcloud) || !string.IsNullOrEmpty(debtReminderInfo2.Note) || !string.IsNullOrEmpty(debtReminderInfo2.Line) || !string.IsNullOrEmpty(debtReminderInfo2.date) || !string.IsNullOrEmpty(debtReminderInfo2.NamePhoneChange);
-                                if (flag13)
-                                {
-                                    this.debtData[key] = debtReminderInfo2;
                                 }
                             }
                         }
-                    }
-                    int num = 0;
-                    Form1.originalData.Clear();
-                    foreach (KeyValuePair<string, Form1.DebtReminderManager.DebtReminderInfo> keyValuePair in this.debtData)
-                    {
-                        num++;
-                        string item = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}", new object[]
+
+                        // Xác định tên thay đổi điện thoại
+                        string phoneChangeName;
+                        if (line == "3")
                         {
-                            keyValuePair.Key,
-                            keyValuePair.Value.Note,
-                            keyValuePair.Value.userIcloud,
-                            keyValuePair.Value.PassIcloud,
-                            keyValuePair.Value.NamePhoneChange,
-                            num - 1,
-                            keyValuePair.Value.Line,
-                            keyValuePair.Value.date,
-                            keyValuePair.Value.TenSo
-                        });
-                        Form1.originalData.Add(item);
-                    }
-                    bool flag14 = line == "1";
-                    if (flag14)
-                    {
-                        result = this.SaveDataMongoDB1();
-                    }
-                    else
-                    {
-                        bool flag15 = line == "2";
-                        if (flag15)
+                            phoneChangeName = "NT LẦN 1";
+                        }else if (line == "5")
                         {
-                            result = this.SaveDataMongoDB2();
+                            phoneChangeName = "Đã Nhắc QH";
                         }
                         else
                         {
-                            bool flag16 = line == "3";
-                            if (flag16)
-                            {
-                                result = this.SaveDataMongoDB(Form1.shouldMerge);
-                            }
-                            else
-                            {
-                                string jsonContent = JsonConvert.SerializeObject(this.debtData, Formatting.Indented);
-                                result = this.SaveDataDeleteMongoDB(jsonContent);
-                            }
+                            DataGridViewCell phoneChangeCell = row.Cells[9];
+                            phoneChangeName = phoneChangeCell?.Value?.ToString() ?? "";
                         }
+
+                        // Tạo đối tượng thông tin nhắc nợ
+                        Form1.DebtReminderManager.DebtReminderInfo reminderInfo = new Form1.DebtReminderManager.DebtReminderInfo();
+                        reminderInfo.MaHD = contractCode;
+                        reminderInfo.TenKh = customerName;
+
+                        // Lấy thông tin iCloud từ cột 10
+                        DataGridViewCell icloudUserCell = row.Cells[10];
+                        reminderInfo.userIcloud = icloudUserCell?.Value?.ToString() ?? "";
+
+                        // Lấy mật khẩu iCloud từ cột 11
+                        DataGridViewCell icloudPassCell = row.Cells[11];
+                        reminderInfo.PassIcloud = icloudPassCell?.Value?.ToString() ?? "";
+
+                        reminderInfo.NamePhoneChange = phoneChangeName;
+
+                        // Lấy ghi chú từ cột 3
+                        DataGridViewCell noteCell = row.Cells[3];
+                        reminderInfo.Note = noteCell?.Value?.ToString() ?? "";
+
+                        // Lấy Line từ cột 2
+                        DataGridViewCell lineCell = row.Cells[2];
+                        reminderInfo.Line = lineCell?.Value?.ToString() ?? "";
+
+                        reminderInfo.date = formattedDate;
+
+                        // Lấy tên số từ cột 8
+                        DataGridViewCell phoneNameCell = row.Cells[8];
+                        reminderInfo.TenSo = phoneNameCell?.Value?.ToString() ?? "";
+
+                        // Kiểm tra xem có ít nhất một trường có dữ liệu không
+                        bool hasAnyData = !string.IsNullOrEmpty(reminderInfo.TenKh) ||
+                                         !string.IsNullOrEmpty(reminderInfo.userIcloud) ||
+                                         !string.IsNullOrEmpty(reminderInfo.PassIcloud) ||
+                                         !string.IsNullOrEmpty(reminderInfo.Note) ||
+                                         !string.IsNullOrEmpty(reminderInfo.Line) ||
+                                         !string.IsNullOrEmpty(reminderInfo.date) ||
+                                         !string.IsNullOrEmpty(reminderInfo.NamePhoneChange);
+
+                        if (hasAnyData)
+                        {
+                            this.debtData[uniqueKey] = reminderInfo;
+                        }
+                    }
+
+                    // Chuẩn bị dữ liệu gốc để lưu
+                    int rowIndex = 0;
+                    Form1.originalData.Clear();
+
+                    foreach (KeyValuePair<string, Form1.DebtReminderManager.DebtReminderInfo> debtEntry in this.debtData)
+                    {
+                        rowIndex++;
+
+                        string formattedRow = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}", new object[]
+                        {
+                debtEntry.Key,
+                debtEntry.Value.Note,
+                debtEntry.Value.userIcloud,
+                debtEntry.Value.PassIcloud,
+                debtEntry.Value.NamePhoneChange,
+                rowIndex - 1,
+                debtEntry.Value.Line,
+                debtEntry.Value.date,
+                debtEntry.Value.TenSo
+                        });
+
+                        Form1.originalData.Add(formattedRow);
+                    }
+
+                    // Lưu dữ liệu vào MongoDB dựa trên loại line
+                    if (line == "1")
+                    {
+                        result = this.SaveDataMongoDB1();
+                    }
+                    else if (line == "2")
+                    {
+                        result = this.SaveDataMongoDB2();
+                    }
+                    else if (line == "3")
+                    {
+                        result = this.SaveDataMongoDB(Form1.shouldMerge);
+                    }else if(line == "5")
+                    {
+                        result = SaveDataMongoQuaHan(checkQuaHan);
+                    }
+                    else
+                    {
+                        string jsonContent = JsonConvert.SerializeObject(this.debtData, Formatting.Indented);
+                        result = this.SaveDataDeleteMongoDB(jsonContent);
                     }
                 }
                 catch (Exception ex)
@@ -1525,6 +1477,7 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                     MessageBox.Show("Lỗi khi lưu dữ liệu nhắc nợ: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     result = false;
                 }
+
                 return result;
             }
 
@@ -1746,7 +1699,73 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                     return false;
                 }
             }
+            public bool SaveDataMongoQuaHan(bool shouldMerge)
+            {
+                try
+                {
+                    // Serialize dữ liệu
+                    string jsonData = JsonConvert.SerializeObject(this.debtData, Formatting.Indented);
 
+                    // Khởi tạo MongoDB client
+                    string connectionString = "mongodb+srv://banhmichaothuongnhoicloud:8390813asd@cluster0.srtd7rc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+                    var settings = MongoClientSettings.FromConnectionString(connectionString);
+                    settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+                    var client = new MongoClient(settings);
+                    var database = client.GetDatabase("duLieuAPP");
+
+                    // === Lưu vào collection chính (dataRung) ===
+                    var mainCollection = database.GetCollection<Form1.DebtReminderManager.dataRungIcloud>("dataRung");
+                    var mainFilter = Builders<Form1.DebtReminderManager.dataRungIcloud>.Filter.Eq(x => x.Name, "dulieuquahan");
+                    var existingMain = mainCollection.Find(mainFilter).FirstOrDefault();
+
+                    if (existingMain != null)
+                    {
+                        string dataToSave = shouldMerge ? MergeJsonData(existingMain.Data, jsonData) : jsonData;
+                        var update = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set(x => x.Data, dataToSave);
+                        mainCollection.UpdateOne(mainFilter, update);
+                        Console.WriteLine(shouldMerge ? "Đã merge dữ liệu mới vào dữ liệu cũ" : "Đã thay thế hoàn toàn dữ liệu cũ");
+                    }
+                    else
+                    {
+                        mainCollection.InsertOne(new Form1.DebtReminderManager.dataRungIcloud
+                        {
+                            Name = "dulieuquahan",
+                            Data = jsonData
+                        });
+                    }
+
+                    // === Lưu vào collection backup (DataBackup) ===
+                    var backupCollection = database.GetCollection<Form1.DebtReminderManager.dataRungIcloud>("DataBackup");
+                    string backupName = "dulieuquahan" + DateTime.Now.ToString("_dd_MM_yyyy_HH_mm_ss");
+                    var backupFilter = Builders<Form1.DebtReminderManager.dataRungIcloud>.Filter.Eq(x => x.Name, backupName);
+                    var existingBackup = backupCollection.Find(backupFilter).FirstOrDefault();
+
+                    if (existingBackup != null)
+                    {
+                        string dataToSave = shouldMerge ? MergeJsonData(existingBackup.Data, jsonData) : jsonData;
+                        var update = Builders<Form1.DebtReminderManager.dataRungIcloud>.Update.Set(x => x.Data, dataToSave);
+                        backupCollection.UpdateOne(backupFilter, update);
+                    }
+                    else
+                    {
+                        backupCollection.InsertOne(new Form1.DebtReminderManager.dataRungIcloud
+                        {
+                            Name = backupName,
+                            Data = jsonData
+                        });
+                    }
+
+                    // Dọn dẹp backup cũ
+                    this.CleanupOldBackupData(backupCollection, "4");
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi lưu dữ liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    return false;
+                }
+            }
             // Helper method để merge JSON - Giữ nguyên dữ liệu cũ, chỉ thêm key mới
             private string MergeJsonData(string existingJson, string newJson)
             {
@@ -2187,6 +2206,10 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                     {
                         this.HandleLoiNhacButtonClick(rowIndex);
                     }
+                    else if (checkQuaHan)
+                    {
+                        HandleLoiNhacButtonClick1(rowIndex);
+                    }
                     else
                     {
                         Clipboard.SetText(text2);
@@ -2336,6 +2359,46 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
             catch (Exception ex2)
             {
                 MessageBox.Show("Lỗi khi copy: " + ex2.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            }
+        }
+        private void HandleLoiNhacButtonClick1(int rowIndex)
+        {
+            try
+            {
+                int displayRowIndex = this.FindDisplayRowIndexByRealIndex(rowIndex);
+                bool rowNotFound = displayRowIndex == -1;
+
+                if (!rowNotFound)
+                {
+                    // Tạo tin nhắn nhắc nợ bằng tiếng Thái
+                    string reminderMessage = string.Concat(new string[]
+                    {
+                "เราเพิ่งได้รับการแจ้งเตือน! โทรศัพท์ของคุณจะถูกล็อคภายใน 24 ชั่วโมงข้างหน้า สาเหตุคือคุณติดหนี้และไม่ยอมชำระเงิน ทีมงานของเราได้ติดต่อคุณหลายครั้งแล้วแต่คุณไม่ตั้งใจจะชำระเงิน เรากำลังแจ้งให้คุณทราบก่อนที่โทรศัพท์ของคุณจะถูกล็อค หากเราไม่ได้รับการตอบกลับจากคุณ โทรศัพท์ของคุณจะถูกล็อคภายใน 24 ชั่วโมงข้างหน้าตามค่าเริ่มต้น เราจะทำการล็อคโดยไม่แจ้งให้ทราบล่วงหน้า ดังนั้นคุณกรุณาบันทึกข้อมูลให้ครบถ้วนด้วยนะคะ\n\n",
+                "หลังจากล็อคโทรศัพท์ของคุณแล้ว โปรดติดต่อที่อยู่ด้านล่าง:\n",
+                "Line: MiuMiu-NamThanIcloud, ID line: annammedia112000\n",
+                "Line: Annam-Nathamicloud, ID line: annamicloud\n",
+                "FB: https://www.facebook.com/100083517735368"
+                    });
+
+                    bool hasValidMessage = !string.IsNullOrEmpty(reminderMessage);
+
+                    if (hasValidMessage)
+                    {
+                        try
+                        {
+                            Clipboard.SetText(reminderMessage);
+                            this.richTextBox1.AppendText("Đã Copy Lời Nhắc\r\n");
+                        }
+                        catch (Exception clipboardException)
+                        {
+                            MessageBox.Show("Lỗi khi copy: " + clipboardException.Message);
+                        }
+                    }
+                }
+            }
+            catch (Exception copyException)
+            {
+                MessageBox.Show("Lỗi khi copy: " + copyException.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Hand);
             }
         }
         private void HandleXoaButtonClick(int rowIndex)
@@ -5293,6 +5356,107 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
             }
             return result;
         }
+        private List<string> GetUserQuaHan(string userId, string shopId)
+        {
+            List<string> result;
+            string tenSo = "";
+            try
+            {
+                if (shopId == "SHP19263338")
+                {
+                    tenSo = "Sổ 1";
+                }
+                else if (shopId == "SHP10275991")
+                {
+                    tenSo = "Sổ 2";
+                }
+                else if (shopId == "SHP93791247")
+                {
+                    tenSo = "Sổ 3";
+                }
+                else if (shopId == "SHP01201952")
+                {
+                    tenSo = "Sổ 6";
+                }
+                else if (shopId == "SHP78278175")
+                {
+                    tenSo = "Sổ 7";
+                }
+                List<string> list = new List<string>();
+                string text = this.comboBoxUsername1.Text.Trim();
+                string text2 = this.textBoxPass.Text;
+                string text3 = new HttpRequest
+                {
+                    UserAgent = xNet.Http.ChromeUserAgent()
+                }.Get(string.Concat(new string[]
+                {
+            "https://annam.pro/api/get_contracts1.php?userId=",
+            userId,
+            "&shopId=",
+            shopId,
+            "&status=all"
+                }), null).ToString();
+                JObject jobject = JObject.Parse(text3);
+                bool flag = jobject["data"].Count<JToken>() > 0;
+                if (flag)
+                {
+                    int num = jobject["data"].Count<JToken>();
+                    for (int i = 0; i < num; i++)
+                    {
+                        string text7 = jobject["data"][i]["current_status"].ToString();
+
+                        // Chỉ xử lý các record có current_status là "Quá hạn"
+                        if (text7 == "Quá hạn")
+                        {
+                            string text4 = jobject["data"][i]["code_id"].ToString();
+                            string text5 = jobject["data"][i]["customer_name"].ToString();
+                            string text6 = "";
+                            string s = jobject["data"][i]["next_payment_date"].ToString();
+                            DateTime now;
+                            bool flag2 = !DateTime.TryParseExact(s, "M/d/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out now);
+                            if (flag2)
+                            {
+                                bool flag3 = !DateTime.TryParse(s, out now);
+                                if (flag3)
+                                {
+                                    now = DateTime.Now;
+                                }
+                            }
+                            string text8 = now.ToString("dd/MM/yyyy");
+                            list.Add(string.Concat(new string[]
+                            {
+                        text4,
+                        "|",
+                        text5,
+                        "|",
+                        text6,
+                        "|",
+                        text7,
+                        " ",
+                        text6,
+                        " tiền họ|",
+                        i.ToString(),
+                        "|",
+                        tenSo,
+                        "|",
+                        text8
+                            }));
+                        }
+                    }
+                    result = list;
+                }
+                else
+                {
+                    result = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+            return result;
+        }
+        
         private void button9_Click_1(object sender, EventArgs e)
         {
             string userIcloud = comboBoxUsername1.SelectedItem?.ToString();
@@ -6001,6 +6165,9 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                         if (checked3)
                         {
                             line = "3";
+                        }else if(radioButtonQH.Checked)
+                        {
+                            line = "5";
                         }
                         else
                         {
@@ -7000,6 +7167,14 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                         {
                             text = GetDataFromMongoDBEveryDay();
                         }
+                        else if (radioButtonQH.Checked && selectedValue == "None")
+                        {
+                            text = GetDataFromMongoDBByQH();
+                        }
+                        else
+                        {
+
+                        }
                     }
                 }
                 bool flag = string.IsNullOrWhiteSpace(text) || text == "[]" || text == "{}";
@@ -7145,6 +7320,29 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                 IMongoDatabase database = mongoClient.GetDatabase("duLieuAPP", null);
                 IMongoCollection<Form1.DebtReminderManager.dataRungIcloud> collection = database.GetCollection<Form1.DebtReminderManager.dataRungIcloud>("dataRung", null);
                 FilterDefinition<Form1.DebtReminderManager.dataRungIcloud> filterDefinition = Builders<Form1.DebtReminderManager.dataRungIcloud>.Filter.Eq<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Name, "dulieuhangngay");
+                Form1.DebtReminderManager.dataRungIcloud dataRungIcloud = IFindFluentExtensions.FirstOrDefault<Form1.DebtReminderManager.dataRungIcloud, Form1.DebtReminderManager.dataRungIcloud>(IMongoCollectionExtensions.Find<Form1.DebtReminderManager.dataRungIcloud>(collection, filterDefinition, null), default(CancellationToken));
+                result = (((dataRungIcloud != null) ? dataRungIcloud.Data : null) ?? "");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi kết nối MongoDB: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                result = "";
+            }
+            return result;
+        }
+
+        private string GetDataFromMongoDBByQH()
+        {
+            string result;
+            try
+            {
+                string text = "mongodb+srv://banhmichaothuongnhoicloud:8390813asd@cluster0.srtd7rc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+                MongoClientSettings mongoClientSettings = MongoClientSettings.FromConnectionString(text);
+                mongoClientSettings.ServerApi = new ServerApi(ServerApiVersion.V1, default(Optional<bool?>), default(Optional<bool?>));
+                MongoClient mongoClient = new MongoClient(mongoClientSettings);
+                IMongoDatabase database = mongoClient.GetDatabase("duLieuAPP", null);
+                IMongoCollection<Form1.DebtReminderManager.dataRungIcloud> collection = database.GetCollection<Form1.DebtReminderManager.dataRungIcloud>("dataRung", null);
+                FilterDefinition<Form1.DebtReminderManager.dataRungIcloud> filterDefinition = Builders<Form1.DebtReminderManager.dataRungIcloud>.Filter.Eq<string>((Form1.DebtReminderManager.dataRungIcloud x) => x.Name, "dulieuquahan");
                 Form1.DebtReminderManager.dataRungIcloud dataRungIcloud = IFindFluentExtensions.FirstOrDefault<Form1.DebtReminderManager.dataRungIcloud, Form1.DebtReminderManager.dataRungIcloud>(IMongoCollectionExtensions.Find<Form1.DebtReminderManager.dataRungIcloud>(collection, filterDefinition, null), default(CancellationToken));
                 result = (((dataRungIcloud != null) ? dataRungIcloud.Data : null) ?? "");
             }
@@ -7480,6 +7678,44 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
             }));
             List<string> userTomorowNew = this.GetUserTomorowNew("USR38122602", "SHP78278175");
             this.LoadAndSaveData(userTomorowNew);
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                this.button5.Invoke(new MethodInvoker(delegate ()
+                {
+                    this.radioButtonQH.Checked = true;
+                }));
+                checkQuaHan = true;
+                List<string> userTomorowNew = this.GetUserQuaHan("USR38122602", "SHP01201952");
+                this.LoadAndSaveData(userTomorowNew);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi đọc file: {ex.Message}", "Lỗi",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void button9_Click_2(object sender, EventArgs e)
+        {
+            try
+            {
+                this.button5.Invoke(new MethodInvoker(delegate ()
+                {
+                    this.radioButtonQH.Checked = true;
+                }));
+                checkQuaHan = true;
+                List<string> userTomorowNew = this.GetUserQuaHan("USR38122602", "SHP78278175");
+                this.LoadAndSaveData(userTomorowNew);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi đọc file: {ex.Message}", "Lỗi",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

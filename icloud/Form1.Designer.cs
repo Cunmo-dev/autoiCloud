@@ -63,6 +63,21 @@
             this.button4 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.label1 = new System.Windows.Forms.Label();
+            this.comboBoxUsername1 = new System.Windows.Forms.ComboBox();
+            this.textBoxPass = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button6 = new System.Windows.Forms.Button();
+            this.comboBoxUsername = new System.Windows.Forms.ComboBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.textBoxPassIcloud = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.maHD = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.khachHang = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tiencandong = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -79,20 +94,8 @@
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NgayThang = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Move = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.label1 = new System.Windows.Forms.Label();
-            this.comboBoxUsername1 = new System.Windows.Forms.ComboBox();
-            this.textBoxPass = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.comboBoxUsername = new System.Windows.Forms.ComboBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.textBoxPassIcloud = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.button7 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.radioButtonQH = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEnd)).BeginInit();
@@ -173,6 +176,7 @@
             // groupBox5
             // 
             this.groupBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.groupBox5.Controls.Add(this.radioButtonQH);
             this.groupBox5.Controls.Add(this.comboBox1);
             this.groupBox5.Controls.Add(this.radioButtonxoa);
             this.groupBox5.Controls.Add(this.radioButtonAll);
@@ -205,7 +209,7 @@
             "Quá Hạn Sổ 3",
             "Quá Hạn Sổ 6",
             "Quá Hạn Sổ 7"});
-            this.comboBox1.Location = new System.Drawing.Point(8, 160);
+            this.comboBox1.Location = new System.Drawing.Point(8, 150);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 21);
             this.comboBox1.TabIndex = 22;
@@ -213,7 +217,7 @@
             // radioButtonxoa
             // 
             this.radioButtonxoa.AutoSize = true;
-            this.radioButtonxoa.Location = new System.Drawing.Point(82, 207);
+            this.radioButtonxoa.Location = new System.Drawing.Point(83, 211);
             this.radioButtonxoa.Name = "radioButtonxoa";
             this.radioButtonxoa.Size = new System.Drawing.Size(44, 17);
             this.radioButtonxoa.TabIndex = 21;
@@ -224,7 +228,7 @@
             // 
             this.radioButtonAll.AutoSize = true;
             this.radioButtonAll.Checked = true;
-            this.radioButtonAll.Location = new System.Drawing.Point(8, 207);
+            this.radioButtonAll.Location = new System.Drawing.Point(8, 210);
             this.radioButtonAll.Name = "radioButtonAll";
             this.radioButtonAll.Size = new System.Drawing.Size(79, 17);
             this.radioButtonAll.TabIndex = 20;
@@ -235,7 +239,7 @@
             // radioButtonLine2
             // 
             this.radioButtonLine2.AutoSize = true;
-            this.radioButtonLine2.Location = new System.Drawing.Point(74, 184);
+            this.radioButtonLine2.Location = new System.Drawing.Point(73, 176);
             this.radioButtonLine2.Name = "radioButtonLine2";
             this.radioButtonLine2.Size = new System.Drawing.Size(54, 17);
             this.radioButtonLine2.TabIndex = 19;
@@ -245,7 +249,7 @@
             // radioButtonLine1
             // 
             this.radioButtonLine1.AutoSize = true;
-            this.radioButtonLine1.Location = new System.Drawing.Point(8, 185);
+            this.radioButtonLine1.Location = new System.Drawing.Point(8, 176);
             this.radioButtonLine1.Name = "radioButtonLine1";
             this.radioButtonLine1.Size = new System.Drawing.Size(54, 17);
             this.radioButtonLine1.TabIndex = 18;
@@ -254,14 +258,14 @@
             // 
             // numericUpDownEnd
             // 
-            this.numericUpDownEnd.Location = new System.Drawing.Point(92, 135);
+            this.numericUpDownEnd.Location = new System.Drawing.Point(92, 125);
             this.numericUpDownEnd.Name = "numericUpDownEnd";
             this.numericUpDownEnd.Size = new System.Drawing.Size(38, 20);
             this.numericUpDownEnd.TabIndex = 17;
             // 
             // numericUpDownStart
             // 
-            this.numericUpDownStart.Location = new System.Drawing.Point(26, 135);
+            this.numericUpDownStart.Location = new System.Drawing.Point(26, 125);
             this.numericUpDownStart.Name = "numericUpDownStart";
             this.numericUpDownStart.Size = new System.Drawing.Size(38, 20);
             this.numericUpDownStart.TabIndex = 16;
@@ -269,7 +273,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(68, 137);
+            this.label7.Location = new System.Drawing.Point(68, 127);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(27, 13);
             this.label7.TabIndex = 15;
@@ -278,7 +282,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(5, 137);
+            this.label5.Location = new System.Drawing.Point(5, 127);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(20, 13);
             this.label5.TabIndex = 14;
@@ -286,7 +290,7 @@
             // 
             // button24
             // 
-            this.button24.Location = new System.Drawing.Point(68, 57);
+            this.button24.Location = new System.Drawing.Point(68, 50);
             this.button24.Name = "button24";
             this.button24.Size = new System.Drawing.Size(63, 37);
             this.button24.TabIndex = 13;
@@ -296,7 +300,7 @@
             // 
             // button15
             // 
-            this.button15.Location = new System.Drawing.Point(68, 99);
+            this.button15.Location = new System.Drawing.Point(68, 90);
             this.button15.Name = "button15";
             this.button15.Size = new System.Drawing.Size(61, 31);
             this.button15.TabIndex = 12;
@@ -308,7 +312,7 @@
             // 
             this.button13.Location = new System.Drawing.Point(7, 17);
             this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(123, 35);
+            this.button13.Size = new System.Drawing.Size(123, 29);
             this.button13.TabIndex = 10;
             this.button13.Text = "Nhập Dữ Liệu Gốc";
             this.button13.UseVisualStyleBackColor = true;
@@ -316,7 +320,7 @@
             // 
             // button14
             // 
-            this.button14.Location = new System.Drawing.Point(9, 99);
+            this.button14.Location = new System.Drawing.Point(9, 90);
             this.button14.Name = "button14";
             this.button14.Size = new System.Drawing.Size(55, 31);
             this.button14.TabIndex = 8;
@@ -326,7 +330,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(7, 57);
+            this.button5.Location = new System.Drawing.Point(5, 49);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(64, 37);
             this.button5.TabIndex = 11;
@@ -337,6 +341,8 @@
             // groupBox4
             // 
             this.groupBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.groupBox4.Controls.Add(this.button9);
+            this.groupBox4.Controls.Add(this.button1);
             this.groupBox4.Controls.Add(this.button19);
             this.groupBox4.Controls.Add(this.button20);
             this.groupBox4.Controls.Add(this.button21);
@@ -352,7 +358,7 @@
             // 
             // button19
             // 
-            this.button19.Location = new System.Drawing.Point(4, 80);
+            this.button19.Location = new System.Drawing.Point(3, 67);
             this.button19.Name = "button19";
             this.button19.Size = new System.Drawing.Size(67, 27);
             this.button19.TabIndex = 25;
@@ -362,7 +368,7 @@
             // 
             // button20
             // 
-            this.button20.Location = new System.Drawing.Point(71, 50);
+            this.button20.Location = new System.Drawing.Point(71, 39);
             this.button20.Name = "button20";
             this.button20.Size = new System.Drawing.Size(63, 25);
             this.button20.TabIndex = 24;
@@ -372,7 +378,7 @@
             // 
             // button21
             // 
-            this.button21.Location = new System.Drawing.Point(3, 50);
+            this.button21.Location = new System.Drawing.Point(3, 40);
             this.button21.Name = "button21";
             this.button21.Size = new System.Drawing.Size(67, 25);
             this.button21.TabIndex = 23;
@@ -382,7 +388,7 @@
             // 
             // button22
             // 
-            this.button22.Location = new System.Drawing.Point(71, 19);
+            this.button22.Location = new System.Drawing.Point(71, 14);
             this.button22.Name = "button22";
             this.button22.Size = new System.Drawing.Size(63, 25);
             this.button22.TabIndex = 22;
@@ -392,7 +398,7 @@
             // 
             // button23
             // 
-            this.button23.Location = new System.Drawing.Point(3, 18);
+            this.button23.Location = new System.Drawing.Point(3, 13);
             this.button23.Name = "button23";
             this.button23.Size = new System.Drawing.Size(67, 26);
             this.button23.TabIndex = 21;
@@ -403,7 +409,7 @@
             // button8
             // 
             this.button8.BackColor = System.Drawing.Color.Red;
-            this.button8.Location = new System.Drawing.Point(71, 77);
+            this.button8.Location = new System.Drawing.Point(71, 65);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(64, 31);
             this.button8.TabIndex = 13;
@@ -521,127 +527,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(1289, 454);
             this.dataGridView1.TabIndex = 5;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
-            // 
-            // maHD
-            // 
-            this.maHD.HeaderText = "Mã HĐ";
-            this.maHD.MinimumWidth = 6;
-            this.maHD.Name = "maHD";
-            this.maHD.Width = 50;
-            // 
-            // khachHang
-            // 
-            this.khachHang.HeaderText = "Khách hàng";
-            this.khachHang.MinimumWidth = 6;
-            this.khachHang.Name = "khachHang";
-            this.khachHang.Width = 150;
-            // 
-            // tiencandong
-            // 
-            this.tiencandong.HeaderText = "Tiền cần đóng";
-            this.tiencandong.MinimumWidth = 6;
-            this.tiencandong.Name = "tiencandong";
-            this.tiencandong.Width = 45;
-            // 
-            // lydo
-            // 
-            this.lydo.HeaderText = "Lý do(Note)";
-            this.lydo.MinimumWidth = 6;
-            this.lydo.Name = "lydo";
-            this.lydo.Width = 180;
-            // 
-            // chat
-            // 
-            this.chat.HeaderText = "Mở Line";
-            this.chat.MinimumWidth = 6;
-            this.chat.Name = "chat";
-            this.chat.Text = "Mở";
-            this.chat.UseColumnTextForButtonValue = true;
-            this.chat.Width = 50;
-            // 
-            // loiNhac
-            // 
-            this.loiNhac.HeaderText = "Copy Lời Nhắc";
-            this.loiNhac.MinimumWidth = 6;
-            this.loiNhac.Name = "loiNhac";
-            this.loiNhac.Text = "Copy";
-            this.loiNhac.UseColumnTextForButtonValue = true;
-            this.loiNhac.Width = 50;
-            // 
-            // findIphone
-            // 
-            this.findIphone.HeaderText = "Rung";
-            this.findIphone.MinimumWidth = 6;
-            this.findIphone.Name = "findIphone";
-            this.findIphone.Text = "Rung";
-            this.findIphone.UseColumnTextForButtonValue = true;
-            this.findIphone.Width = 50;
-            // 
-            // tatRung
-            // 
-            this.tatRung.HeaderText = "Tắt Rung";
-            this.tatRung.MinimumWidth = 6;
-            this.tatRung.Name = "tatRung";
-            this.tatRung.Text = "Tắt Rung";
-            this.tatRung.UseColumnTextForButtonValue = true;
-            this.tatRung.Width = 60;
-            // 
-            // Online
-            // 
-            this.Online.HeaderText = "Trạng Thái";
-            this.Online.MinimumWidth = 6;
-            this.Online.Name = "Online";
-            this.Online.Width = 75;
-            // 
-            // PhoneName
-            // 
-            this.PhoneName.HeaderText = "Tên Phone";
-            this.PhoneName.MinimumWidth = 6;
-            this.PhoneName.Name = "PhoneName";
-            this.PhoneName.Width = 80;
-            // 
-            // userIcloud
-            // 
-            this.userIcloud.HeaderText = "User icloud";
-            this.userIcloud.MinimumWidth = 6;
-            this.userIcloud.Name = "userIcloud";
-            this.userIcloud.Width = 125;
-            // 
-            // passIcloud
-            // 
-            this.passIcloud.HeaderText = "Pass icloud";
-            this.passIcloud.MinimumWidth = 6;
-            this.passIcloud.Name = "passIcloud";
-            this.passIcloud.Width = 125;
-            // 
-            // deleteRow
-            // 
-            this.deleteRow.HeaderText = "Xóa";
-            this.deleteRow.MinimumWidth = 6;
-            this.deleteRow.Name = "deleteRow";
-            this.deleteRow.Text = "Xóa";
-            this.deleteRow.UseColumnTextForButtonValue = true;
-            this.deleteRow.Width = 60;
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "STT";
-            this.Column1.Name = "Column1";
-            this.Column1.Width = 30;
-            // 
-            // NgayThang
-            // 
-            this.NgayThang.HeaderText = "Ngày Tháng";
-            this.NgayThang.Name = "NgayThang";
-            // 
-            // Move
-            // 
-            this.Move.HeaderText = "Chuyển";
-            this.Move.MinimumWidth = 6;
-            this.Move.Name = "Move";
-            this.Move.Text = "Move";
-            this.Move.UseColumnTextForButtonValue = true;
-            this.Move.Width = 60;
             // 
             // label1
             // 
@@ -780,6 +665,157 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(3, 97);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(67, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "QH6";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // maHD
+            // 
+            this.maHD.HeaderText = "Mã HĐ";
+            this.maHD.MinimumWidth = 6;
+            this.maHD.Name = "maHD";
+            this.maHD.Width = 50;
+            // 
+            // khachHang
+            // 
+            this.khachHang.HeaderText = "Khách hàng";
+            this.khachHang.MinimumWidth = 6;
+            this.khachHang.Name = "khachHang";
+            this.khachHang.Width = 150;
+            // 
+            // tiencandong
+            // 
+            this.tiencandong.HeaderText = "Line";
+            this.tiencandong.MinimumWidth = 6;
+            this.tiencandong.Name = "tiencandong";
+            this.tiencandong.Width = 45;
+            // 
+            // lydo
+            // 
+            this.lydo.HeaderText = "Lý do(Note)";
+            this.lydo.MinimumWidth = 6;
+            this.lydo.Name = "lydo";
+            this.lydo.Width = 180;
+            // 
+            // chat
+            // 
+            this.chat.HeaderText = "Mở Line";
+            this.chat.MinimumWidth = 6;
+            this.chat.Name = "chat";
+            this.chat.Text = "Mở";
+            this.chat.UseColumnTextForButtonValue = true;
+            this.chat.Width = 50;
+            // 
+            // loiNhac
+            // 
+            this.loiNhac.HeaderText = "Copy Lời Nhắc";
+            this.loiNhac.MinimumWidth = 6;
+            this.loiNhac.Name = "loiNhac";
+            this.loiNhac.Text = "Copy";
+            this.loiNhac.UseColumnTextForButtonValue = true;
+            this.loiNhac.Width = 50;
+            // 
+            // findIphone
+            // 
+            this.findIphone.HeaderText = "Rung";
+            this.findIphone.MinimumWidth = 6;
+            this.findIphone.Name = "findIphone";
+            this.findIphone.Text = "Rung";
+            this.findIphone.UseColumnTextForButtonValue = true;
+            this.findIphone.Width = 50;
+            // 
+            // tatRung
+            // 
+            this.tatRung.HeaderText = "Tắt Rung";
+            this.tatRung.MinimumWidth = 6;
+            this.tatRung.Name = "tatRung";
+            this.tatRung.Text = "Tắt Rung";
+            this.tatRung.UseColumnTextForButtonValue = true;
+            this.tatRung.Width = 60;
+            // 
+            // Online
+            // 
+            this.Online.HeaderText = "Trạng Thái";
+            this.Online.MinimumWidth = 6;
+            this.Online.Name = "Online";
+            this.Online.Width = 75;
+            // 
+            // PhoneName
+            // 
+            this.PhoneName.HeaderText = "Tên Phone";
+            this.PhoneName.MinimumWidth = 6;
+            this.PhoneName.Name = "PhoneName";
+            this.PhoneName.Width = 80;
+            // 
+            // userIcloud
+            // 
+            this.userIcloud.HeaderText = "User icloud";
+            this.userIcloud.MinimumWidth = 6;
+            this.userIcloud.Name = "userIcloud";
+            this.userIcloud.Width = 125;
+            // 
+            // passIcloud
+            // 
+            this.passIcloud.HeaderText = "Pass icloud";
+            this.passIcloud.MinimumWidth = 6;
+            this.passIcloud.Name = "passIcloud";
+            this.passIcloud.Width = 125;
+            // 
+            // deleteRow
+            // 
+            this.deleteRow.HeaderText = "Xóa";
+            this.deleteRow.MinimumWidth = 6;
+            this.deleteRow.Name = "deleteRow";
+            this.deleteRow.Text = "Xóa";
+            this.deleteRow.UseColumnTextForButtonValue = true;
+            this.deleteRow.Width = 60;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "STT";
+            this.Column1.Name = "Column1";
+            this.Column1.Width = 30;
+            // 
+            // NgayThang
+            // 
+            this.NgayThang.HeaderText = "Ngày Tháng";
+            this.NgayThang.Name = "NgayThang";
+            // 
+            // Move
+            // 
+            this.Move.HeaderText = "Chuyển";
+            this.Move.MinimumWidth = 6;
+            this.Move.Name = "Move";
+            this.Move.Text = "Move";
+            this.Move.UseColumnTextForButtonValue = true;
+            this.Move.Width = 60;
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(71, 97);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(61, 23);
+            this.button9.TabIndex = 26;
+            this.button9.Text = "QH7";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click_2);
+            // 
+            // radioButtonQH
+            // 
+            this.radioButtonQH.AutoSize = true;
+            this.radioButtonQH.Location = new System.Drawing.Point(8, 192);
+            this.radioButtonQH.Name = "radioButtonQH";
+            this.radioButtonQH.Size = new System.Drawing.Size(68, 17);
+            this.radioButtonQH.TabIndex = 23;
+            this.radioButtonQH.Text = "Quá Hạn";
+            this.radioButtonQH.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -855,6 +891,9 @@
         private System.Windows.Forms.RichTextBox richTextBox2;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button9;
         private System.Windows.Forms.DataGridViewTextBoxColumn maHD;
         private System.Windows.Forms.DataGridViewTextBoxColumn khachHang;
         private System.Windows.Forms.DataGridViewTextBoxColumn tiencandong;
@@ -871,7 +910,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn NgayThang;
         private System.Windows.Forms.DataGridViewButtonColumn Move;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.RadioButton radioButtonQH;
     }
 }
 
