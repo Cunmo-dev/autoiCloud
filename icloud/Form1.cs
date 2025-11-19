@@ -5362,6 +5362,7 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
             string tenSo = "";
             try
             {
+                // Xác định tên sổ
                 if (shopId == "SHP19263338")
                 {
                     tenSo = "Sổ 1";
@@ -5382,9 +5383,18 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                 {
                     tenSo = "Sổ 7";
                 }
+
+                // Lấy dữ liệu từ MongoDB
+                string mongoData1 = this.GetDataFromMongoDB1();
+                string mongoData2 = this.GetDataFromMongoDB2();
+
+                Dictionary<string, Form1.DebtReminderManager.DebtReminderInfo> dbData1 = ParseMongoDBData(mongoData1);
+                Dictionary<string, Form1.DebtReminderManager.DebtReminderInfo> dbData2 = ParseMongoDBData(mongoData2);
+
                 List<string> list = new List<string>();
                 string text = this.comboBoxUsername1.Text.Trim();
                 string text2 = this.textBoxPass.Text;
+
                 string text3 = new HttpRequest
                 {
                     UserAgent = xNet.Http.ChromeUserAgent()
@@ -5396,8 +5406,10 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
             shopId,
             "&status=all"
                 }), null).ToString();
+
                 JObject jobject = JObject.Parse(text3);
                 bool flag = jobject["data"].Count<JToken>() > 0;
+
                 if (flag)
                 {
                     int num = jobject["data"].Count<JToken>();
@@ -5408,10 +5420,10 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                         // Chỉ xử lý các record có current_status là "Quá hạn"
                         if (text7 == "Quá hạn")
                         {
-                            string text4 = jobject["data"][i]["code_id"].ToString();
-                            string text5 = jobject["data"][i]["customer_name"].ToString();
-                            string text6 = "";
+                            string text4 = jobject["data"][i]["code_id"].ToString(); // MaHD
+                            string text5 = jobject["data"][i]["customer_name"].ToString(); // TenKH
                             string s = jobject["data"][i]["next_payment_date"].ToString();
+
                             DateTime now;
                             bool flag2 = !DateTime.TryParseExact(s, "M/d/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out now);
                             if (flag2)
@@ -5423,23 +5435,63 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                                 }
                             }
                             string text8 = now.ToString("dd/MM/yyyy");
+
+                            // Kiểm tra dữ liệu từ MongoDB
+                            string lineInfo = "";
+                            string noteInfo = "";
+                            string userIcloud = text;
+                            string passIcloud = text2;
+                            string namePhoneChange = "";
+                            string dateInfo = "";
+
+                            Form1.DebtReminderManager.DebtReminderInfo dbInfo = null;
+
+                            // Tạo key để tìm trong MongoDB (MaHD|TenKH)
+                            string searchKey = text4 + "|" + text5;
+
+                            // Kiểm tra trong MongoDB1 trước
+                            if (dbData1.ContainsKey(searchKey))
+                            {
+                                dbInfo = dbData1[searchKey];
+                            }
+                            // Nếu không có trong MongoDB1, kiểm tra MongoDB2
+                            else if (dbData2.ContainsKey(searchKey))
+                            {
+                                dbInfo = dbData2[searchKey];
+                            }
+
+                            // Nếu tìm thấy trong MongoDB, lấy thông tin
+                            if (dbInfo != null)
+                            {
+                                lineInfo = dbInfo.Line ?? "";
+                                noteInfo = dbInfo.Note ?? "";
+                                userIcloud = !string.IsNullOrEmpty(dbInfo.userIcloud) ? dbInfo.userIcloud : text;
+                                passIcloud = !string.IsNullOrEmpty(dbInfo.PassIcloud) ? dbInfo.PassIcloud : text2;
+                                namePhoneChange = dbInfo.NamePhoneChange ?? "";
+                                dateInfo = dbInfo.date ?? "";
+                            }
+
+                            // Thêm vào danh sách kết quả theo thứ tự giống LoadDataByMonGoDB
+                            // Format: Key|Note|UserIcloud|PassIcloud|NamePhoneChange|STT|Line|Date|TenSo
                             list.Add(string.Concat(new string[]
                             {
-                        text4,
+                        searchKey,           // [0] Key (MaHD|TenKH)
                         "|",
-                        text5,
+                        noteInfo,            // [1] Note
                         "|",
-                        text6,
+                        userIcloud,          // [2] UserIcloud
                         "|",
-                        text7,
-                        " ",
-                        text6,
-                        " tiền họ|",
-                        i.ToString(),
+                        passIcloud,          // [3] PassIcloud
                         "|",
-                        tenSo,
+                        namePhoneChange,     // [4] NamePhoneChange
                         "|",
-                        text8
+                        i.ToString(),        // [5] STT
+                        "|",
+                        lineInfo,            // [6] Line
+                        "|",
+                        text8,               // [7] Date
+                        "|",
+                        tenSo                // [8] TenSo
                             }));
                         }
                     }
@@ -5456,7 +5508,21 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
             }
             return result;
         }
-        
+        private Dictionary<string, Form1.DebtReminderManager.DebtReminderInfo> ParseMongoDBData(string jsonData)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(jsonData))
+                    return new Dictionary<string, Form1.DebtReminderManager.DebtReminderInfo>();
+
+                return JsonConvert.DeserializeObject<Dictionary<string, Form1.DebtReminderManager.DebtReminderInfo>>(jsonData)
+                       ?? new Dictionary<string, Form1.DebtReminderManager.DebtReminderInfo>();
+            }
+            catch
+            {
+                return new Dictionary<string, Form1.DebtReminderManager.DebtReminderInfo>();
+            }
+        }
         private void button9_Click_1(object sender, EventArgs e)
         {
             string userIcloud = comboBoxUsername1.SelectedItem?.ToString();
@@ -5545,6 +5611,7 @@ del ""{Path.GetFileName(scriptPath)}"" > nul 2>&1
                         this.dataGridView1.Rows[index2].Cells[9].Value = array[5];
                         this.dataGridView1.Rows[index2].Cells[13].Value = array[6];
                         this.dataGridView1.Rows[index2].Cells[14].Value = array[8];
+                        this.dataGridView1.Rows[index2].Cells[8].Value = array[9];
                     }
                 }
             }
